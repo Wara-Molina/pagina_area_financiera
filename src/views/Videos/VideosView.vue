@@ -1,6 +1,5 @@
 <template>
   <div>
-    
     <div class="page-title-area bg-overlay bg-overlay-img banner-img">
       <div class="container">
         <div class="row">
@@ -19,13 +18,9 @@
       </div>
     </div>
 
-
     <div class="course-area pd-top-120 pd-bottom-120">
       <div class="container">
         <div class="row justify-content-center">
-          
-          <div class="col-lg-8 col-12"></div>
-
           <div class="col-lg-4 col-12">
             <div class="td-sidebar">
               <div class="widget widget_search">
@@ -48,7 +43,6 @@
         </div>
         
         <div class="row justify-content-center">
-          
 
           <div class="col-12" v-if="searchGet">
             <div class="col-12 text-center" v-if="searchValues.length === 0">
@@ -65,7 +59,7 @@
               </div>
               
               <template v-for="(vid, index) of searchValues" :key="vid.video_id || index">
-                <div class="col-lg-4 col-md-6">
+                <div class="col-lg-4 col-md-6 mb-4">
                   <div class="single-course-inner">
                     <div class="thumb">
                       <iframe
@@ -89,12 +83,13 @@
                       </div>
                       <div class="bottom-area">
                         <div class="row">
-                          <div class="col-12 align-self-center text-right">
+                          <div class="col-12 text-right">
                             <router-link
                               :to="'/detalleVideo/' + vid.video_id"
-                              class="readmore-text"
+                              class="btn-leer-mas"
                             >
-                              Leer más
+                              Ver video
+                              <i class="fa fa-play-circle"></i>
                             </router-link>
                           </div>
                         </div>
@@ -105,20 +100,17 @@
               </template>
             </div>
           </div>
-
-          <!-- lista de videos  -->
           <div v-else class="col-12 row justify-content-center">
             
-         
+            <!-- Estado vacío -->
             <div class="col-12 text-center" v-if="videos.length === 0">
-              <h2> Sin videos disponibles</h2>
+              <h2>Sin videos disponibles</h2>
               <p class="text-muted">Pronto se agregarán nuevos videos.</p>
             </div>
-            
-            
+
             <template v-else v-for="(vid, index) of videos" :key="vid.video_id || index">
               <div
-                class="col-lg-4 col-md-6"
+                class="col-lg-4 col-md-6 mb-4"
                 v-show="
                   (pag - 1) * NUM_RESULTS <= index &&
                   pag * NUM_RESULTS > index
@@ -147,12 +139,14 @@
                     </div>
                     <div class="bottom-area">
                       <div class="row">
-                        <div class="col-12 align-self-center text-right">
+                        <div class="col-12 text-right">
+                          <!-- ✅ BOTÓN LEER MÁS ESTILIZADO -->
                           <router-link
                             :to="'/detalleVideo/' + vid.video_id"
-                            class="readmore-text"
+                            class="btn-leer-mas"
                           >
-                            Leer más
+                            Ver video
+                            <i class="fa fa-play-circle"></i>
                           </router-link>
                         </div>
                       </div>
@@ -195,6 +189,8 @@
               </ul>
             </nav>
           </div>        
+          
+          <!-- Sidebar -->
           <div class="col-12">
             <hr />
             <SidebarCustom></SidebarCustom>
@@ -211,7 +207,6 @@
 .bg-overlay-img {
   background-image: url("@/assets/Fondo2.jpg");
 }
-
 
 .search-form {
   display: flex;
@@ -246,6 +241,43 @@
   background: var(--main-color-2, #0056b3);
 }
 
+.text-center h2,
+.text-center h3 {
+  color: #666;
+  padding: 2rem;
+}
+
+.text-muted {
+  color: #999;
+}
+
+.cat {
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.single-course-inner {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: white;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  height: 100%;
+}
+
+.single-course-inner:hover {
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  transform: translateY(-3px);
+}
+
+.single-course-inner .thumb {
+  position: relative;
+  overflow: hidden;
+}
 
 .single-course-inner iframe {
   width: 100%;
@@ -258,23 +290,92 @@
   box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
-
-.text-center h2,
-.text-center h3 {
-  color: #666;
-  padding: 2rem;
+.single-course-inner .cat-area {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 2;
 }
 
-.text-muted {
-  color: #999;
+.single-course-inner .details {
+  padding: 1.25rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
+.single-course-inner .details-inner {
+  flex: 1;
+}
 
-.cat {
-  padding: 0.25rem 0.75rem;
-  border-radius: 4px;
-  font-size: 0.85rem;
+.single-course-inner h5 {
+  margin: 0;
+  font-size: 1.15rem;
   font-weight: 600;
+  line-height: 1.4;
+}
+
+.single-course-inner h5 a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.single-course-inner h5 a:hover {
+  color: var(--main-color-1, #007bff);
+}
+
+.single-course-inner .bottom-area {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}
+
+.btn-leer-mas {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+  color: #000;
+  text-decoration: none;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 1.30rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
+  border: 2px solid transparent;
+}
+
+.btn-leer-mas:hover {
+  background: linear-gradient(135deg, #ff9800 0%, #ffc107 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
+  color: #000;
+}
+
+.btn-leer-mas i {
+  font-size: 1rem;
+  transition: transform 0.3s ease;
+}
+
+.btn-leer-mas:hover i {
+  transform: translateX(3px);
+}
+
+@media (max-width: 768px) {
+  .single-course-inner iframe {
+    height: 180px;
+  }
+  
+  .btn-leer-mas {
+    padding: 0.4rem 0.9rem;
+    font-size: 0.85rem;
+  }
+  
+  .single-course-inner h5 {
+    font-size: 1.05rem;
+  }
 }
 </style>
 
@@ -293,7 +394,6 @@ export default {
   data() {
     return {
       idInstitucion: process.env.VUE_APP_ID_INSTITUCION || '22',
-
       videos: [],
       search: "",
       searchGet: false,
@@ -301,8 +401,6 @@ export default {
       NUM_RESULTS: 4, 
       pag: 1,
       pager: 0,
-      
-      
       loading: false
     };
   },
@@ -311,7 +409,7 @@ export default {
     ...mapState(["url_api", "Institucion"]),
 
     resourceUrl() {
-      return process.env.VUE_APP_UPLOADS_URL || 'https://servicioadministrador.upea.bo/uploads/'
+      return (process.env.VUE_APP_UPLOADS_URL || 'https://servicioadministrador.upea.bo/uploads/').trim()
     }
   },
 
@@ -319,10 +417,10 @@ export default {
     async getVideosAll() {
       this.loading = true
       try {
-       
         const res = await api.get(`/institucion/${this.idInstitucion}/contenido`)
         const data = res.data
         const lista = data.upea_videos || []
+
         this.videos = lista
           .filter(vid => vid.video_estado === "1" || vid.video_estado === 1)
           .map(this._limpiarObjeto)
@@ -338,7 +436,6 @@ export default {
       }
     },
 
-   
     _actualizarPager() {
       const total = this.videos?.length || 0
       this.pager = Math.ceil(total / this.NUM_RESULTS)
@@ -369,6 +466,7 @@ export default {
       this.searchValues = []
       this.pag = 1
     },
+
     _limpiarObjeto(obj) {
       if (!obj || typeof obj !== 'object') return obj
       const cleaned = { ...obj }
@@ -383,14 +481,12 @@ export default {
     }
   },
 
-
   created() {
     this.$store.commit("loadOn")
     this.getVideosAll()
   },
 
   beforeUnmount() {
-
     this.limpiarBusqueda()
     this.videos = []
   }

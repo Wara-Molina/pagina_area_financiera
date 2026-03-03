@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <div class="page-title-area bg-overlay bg-overlay-img banner-img">
       <div class="container">
         <div class="row">
@@ -20,7 +19,6 @@
         </div>
       </div>
     </div>
-
     <div class="blog-area pd-top-120 pd-bottom-120">
       <div class="container">
         <div class="row">
@@ -77,20 +75,21 @@
                       >
                         {{ pub.publicaciones_titulo }}
                       </router-link>
-                    </h4>
-                    <router-link
+
+                       <router-link
                       :to="'/detallePublicacion/' + pub.publicaciones_id"
                       @click="$store.commit('clickLink')"
-                      class="readmore-text"
+                      class="btn-leer-mas"
                     >
                       Leer más
+                      <i class="fa fa-arrow-right"></i>
                     </router-link>
+                    </h4>
+                   
                   </div>
                 </div>
               </div>
             </div>
-
-
             <div v-else class="row justify-content-center">
               <div v-if="publicaciones.length === 0" class="col-12 text-center">
                 <h2>Sin publicaciones disponibles</h2>
@@ -144,13 +143,15 @@
                     <router-link
                       :to="'/detallePublicacion/' + pub.publicaciones_id"
                       @click="$store.commit('clickLink')"
-                      class="readmore-text"
+                      class="btn-leer-mas"
                     >
                       Leer más
+                      <i class="fa fa-arrow-right"></i>
                     </router-link>
                   </div>
                 </div>
                 
+                <!-- Paginación -->
                 <nav class="col-12 td-page-navigation text-center mb-5 mb-lg-0" v-if="pager > 1">
                   <ul class="pagination">
                     <li class="pagination-arrow disable">
@@ -186,7 +187,6 @@
             </div>
             
           </div>
-
           <div class="col-lg-4 col-12">
             <div class="td-sidebar">
               <div class="widget widget_search">
@@ -282,6 +282,136 @@
   align-items: center;
   gap: 0.5rem;
 }
+
+.btn-leer-mas {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.25rem;
+  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+  color: #000;
+  text-decoration: none;
+  border-radius: 25px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
+  border: 2px solid transparent;
+  margin-top: 0.75rem;
+}
+
+.btn-leer-mas:hover {
+  background: linear-gradient(135deg, #ff9800 0%, #ffc107 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
+  color: #000;
+}
+
+.btn-leer-mas i {
+  font-size: 0.9rem;
+  transition: transform 0.3s ease;
+}
+
+.btn-leer-mas:hover i {
+  transform: translateX(4px);
+}
+
+.single-blog-inner {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: white;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  margin-bottom: 2rem;
+}
+
+.single-blog-inner:hover {
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  transform: translateY(-3px);
+}
+
+.single-blog-inner .details {
+  padding: 1.25rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.single-blog-inner h4 {
+  margin: 0.75rem 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.single-blog-inner h4 a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.single-blog-inner h4 a:hover {
+  color: var(--main-color-1, #007bff);
+}
+
+.blog-meta ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.blog-meta li {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.blog-meta .comnt {
+  padding: 0.3rem 0.75rem;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.blog-meta .author span {
+  font-weight: 500;
+  color: #333;
+}
+
+.single-blog-inner h4 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.btn-leer-mas-small {
+  padding: 0.3rem 0.75rem;
+  font-size: 0.8rem;
+  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+  border-radius: 15px;
+  white-space: nowrap;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .single-blog-inner {
+    margin-bottom: 1.5rem;
+  }
+  
+  .btn-leer-mas {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .single-blog-inner h4 {
+    font-size: 1.15rem;
+  }
+}
 </style>
 
 <script>
@@ -314,7 +444,7 @@ export default {
     ...mapState(["url_api", "Institucion"]),
     
     imageUrl() {
-      return process.env.VUE_APP_UPLOADS_URL || 'https://servicioadministrador.upea.bo/uploads/'
+      return (process.env.VUE_APP_UPLOADS_URL || 'https://servicioadministrador.upea.bo').trim()
     }
   },
 

@@ -2,7 +2,7 @@ import { createStore } from 'vuex'
 
 export default createStore({
   state: {
-    url_api: process.env.VUE_APP_ROOT_API || 'https://servicioadministrador.upea.bo',
+    url_api: process.env.VUE_APP_API_ROOT || 'https://servicioadministrador.upea.bo',
     getter: true,
     MenuConv: [],
     MenuCur: [],

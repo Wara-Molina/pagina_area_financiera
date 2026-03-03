@@ -25,7 +25,6 @@
 
           <div class="col-lg-8">
             <div v-if="searchGet">
-
               <h3 v-if="searchValues.length === 0" class="text-center">
                  No se encontraron resultados para "{{ search }}"
               </h3>
@@ -37,7 +36,7 @@
                 </div>
                 
                 <template v-for="(conv, index) of searchValues" :key="conv.idconvocatorias || index">
-                  <div class="single-blog-inner col-12 col-lg-6">
+                  <div class="single-blog-inner col-12 col-lg-6 mb-4">
                     <div class="thumb">
                       <router-link
                         :to="'/detalleConvocatoria/' + conv.idconvocatorias"
@@ -69,12 +68,14 @@
                           {{ conv.con_titulo }}
                         </router-link>
                       </h4>
+                      <p class="descripcion-convocatoria" v-html="conv.con_descripcion"></p>
                       <router-link
                         :to="'/detalleConvocatoria/' + conv.idconvocatorias"
                         @click="$store.commit('clickLink')"
-                        class="readmore-text"
+                        class="btn-leer-mas"
                       >
                         Leer más
+                        <i class="fa fa-arrow-right"></i>
                       </router-link>
                     </div>
                   </div>
@@ -87,11 +88,12 @@
                 <h2>Sin {{ tipo.toLowerCase() }} disponibles</h2>
                 <p class="text-muted">Pronto se agregarán nuevas {{ tipo.toLowerCase() }}.</p>
               </div>
+              
               <div v-else class="col-12 row justify-content-center">
                 
                 <template v-for="(conv, index) of convocatorias" :key="conv.idconvocatorias || index">
                   <div
-                    class="single-blog-inner col-12 col-lg-6"
+                    class="single-blog-inner col-12 col-lg-6 mb-4"
                     v-show="
                       (pag - 1) * NUM_RESULTS <= index &&
                       pag * NUM_RESULTS > index
@@ -128,12 +130,15 @@
                           {{ conv.con_titulo }}
                         </router-link>
                       </h4>
+                      <p class="descripcion-convocatoria" v-html="conv.con_descripcion"></p>
+
                       <router-link
                         :to="'/detalleConvocatoria/' + conv.idconvocatorias"
                         @click="$store.commit('clickLink')"
-                        class="readmore-text"
+                        class="btn-leer-mas"
                       >
                         Leer más
+                        <i class="fa fa-arrow-right"></i>
                       </router-link>
                     </div>
                   </div>
@@ -173,13 +178,9 @@
                 </nav>
               </div>
             </div>
-            
           </div>
-
           <div class="col-lg-4 col-12">
             <div class="td-sidebar">
-              
-              <!-- Barra de búsqueda -->
               <div class="widget widget_search">
                 <div class="search-form">
                   <div class="form-group">
@@ -195,8 +196,6 @@
                   </button>
                 </div>
               </div>
-              
-              <!-- Sidebar personalizado -->
               <SidebarCustom></SidebarCustom>
             </div>
           </div>
@@ -246,19 +245,6 @@
   background: var(--main-color-2, #0056b3);
 }
 
-.single-blog-inner img {
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border-radius: 4px;
-  width: 100%;
-  height: 250px;
-  object-fit: cover;
-}
-
-.single-blog-inner img:hover {
-  transform: scale(1.02);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-
 .text-center h2,
 .text-center h3 {
   color: #666;
@@ -274,6 +260,153 @@
   align-items: center;
   gap: 0.5rem;
   flex-wrap: wrap;
+}
+
+.single-blog-inner {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: white;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  margin-bottom: 2rem;
+}
+
+.single-blog-inner:hover {
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  transform: translateY(-3px);
+}
+
+.single-blog-inner img {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border-radius: 4px;
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+}
+
+.single-blog-inner img:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.single-blog-inner .details {
+  padding: 1.25rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.single-blog-inner h4 {
+  margin: 0.75rem 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.single-blog-inner h4 a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.single-blog-inner h4 a:hover {
+  color: var(--main-color-1, #007bff);
+}
+
+.blog-meta ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.blog-meta li {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.blog-meta .comnt {
+  padding: 0.3rem 0.75rem;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+.descripcion-convocatoria {
+  font-size: 0.95rem;
+  color: #555;
+  margin: 0.75rem 0 1rem 0;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.descripcion-convocatoria p {
+  margin: 0;
+}
+
+.descripcion-convocatoria :deep(p) {
+  margin: 0;
+}
+.btn-leer-mas {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+  color: #000;
+  text-decoration: none;
+  border-radius: 20px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
+  border: 2px solid transparent;
+  margin-top: 0.5rem;
+  align-self: flex-start;
+}
+
+.btn-leer-mas:hover {
+  background: linear-gradient(135deg, #ff9800 0%, #ffc107 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
+  color: #000;
+}
+
+.btn-leer-mas i {
+  font-size: 0.9rem;
+  transition: transform 0.3s ease;
+}
+
+.btn-leer-mas:hover i {
+  transform: translateX(4px);
+}
+@media (max-width: 768px) {
+  .single-blog-inner {
+    margin-bottom: 1.5rem;
+  }
+  
+  .btn-leer-mas {
+    padding: 0.4rem 0.9rem;
+    font-size: 0.85rem;
+  }
+  
+  .single-blog-inner h4 {
+    font-size: 1.15rem;
+  }
+  
+  .descripcion-convocatoria {
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    font-size: 0.9rem;
+  }
 }
 </style>
 
@@ -308,7 +441,7 @@ export default {
   computed: {
     ...mapState(["url_api", "Institucion"]),
     imageUrl() {
-      return process.env.VUE_APP_UPLOADS_URL || 'https://servicioadministrador.upea.bo/uploads/'
+      return (process.env.VUE_APP_UPLOADS_URL || 'https://servicioadministrador.upea.bo').trim()
     }
   },
 
@@ -353,7 +486,7 @@ export default {
         })
 
         const tipoEncontrado = Object.values(tiposUnicos).find(
-          t => t.idtipo_conv_comun == tipo_conv || t.tipo_conv_comun_titulo?.toUpperCase() === tipo_conv.toUpperCase()
+          t => String(t.idtipo_conv_comun) === String(tipo_conv) || t.tipo_conv_comun_titulo?.toUpperCase() === tipo_conv.toUpperCase()
         )
         
         if (tipoEncontrado) {
@@ -383,7 +516,7 @@ export default {
             if (this.tipoConvocatoriaId) {
               const tipoNombre = conv.tipo_conv_comun?.tipo_conv_comun_titulo
               const tipoId = conv.tipo_conv_comun?.idtipo_conv_comun
-              return tipoNombre === this.tipo || tipoId == this.tipoConvocatoriaId
+              return tipoNombre === this.tipo || String(tipoId) === String(this.tipoConvocatoriaId)
             }
             return true
           })
@@ -405,7 +538,6 @@ export default {
         this.pag = this.pager
       }
     },
-
 
     buscar() {
       const query = this.search.trim().toUpperCase()
@@ -477,7 +609,6 @@ export default {
       this.cargarDatos(this.$route.params.tipo_conv)
     }
   },
-
   beforeUnmount() {
     this.limpiarBusqueda()
     this.convocatorias = []

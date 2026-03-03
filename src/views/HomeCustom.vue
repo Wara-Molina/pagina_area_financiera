@@ -1,6 +1,6 @@
 <template>
   <div>
-    <!-- -->
+
     <div v-if="idInstitucion === '13'">
       <div class="banner-area banner-bg-overlay banner-img">
         <div class="container">
@@ -55,40 +55,52 @@
       </div>
     </div>
 
-    <!--Con texto animado fade -->
-    <div v-else-if="idInstitucion === '24'">
-      <div class="banner-area banner-area-1 banner-bg-overlay banner-img">
-        <div class="container">
-          <div class="row">
-            <div class="col-10">
-              <div class="banner-inner style-white text-center text-lg-left">
-                <h1 class="title_1-2" style="text-transform: uppercase!important;">
-                  {{ institucion.institucion_nombre }}
-                </h1>
-                <div>
-                  <transition name="text-fade" mode="out-in">
-                    <p 
-                      class="animated-text" 
-                      style="color:#fff!important;" 
-                      :class="{ 'fade-out': isFadingOut }"
-                      @animationend="changeText"
-                    >
-                      {{ currentText }}
-                    </p>
-                  </transition>
-                </div>
-                <br /><br />
-                <div class="cont">
-                  <router-link style="text-align: center !important;" class="btn btn-base" to="/about">
-                    SOBRE NOSOTROS
-                  </router-link>
-                </div>
-              </div>
+<div v-else-if="idInstitucion === '24'">
+  <div class="banner-area banner-area-1 banner-bg-overlay banner-img">
+    <div class="container">
+      <div class="row">
+        <div class="col-10">
+          <div class="banner-inner style-white text-center text-lg-left">
+            <div class="avatar api-logo">
+              <img 
+                v-if="institucion.institucion_logo"
+                :src="imageUrl + institucion.institucion_logo" 
+                :alt="institucion.institucion_nombre"
+                style="background:none!important; max-height: 120px; object-fit: contain;"
+                @error="e => e.target.style.display = 'none'"
+              />
             </div>
+¡
+            <h1 class="title_1-2" style="text-transform: uppercase!important;">
+              {{ institucion.institucion_nombre || 'COMERCIO INTERNACIONAL' }}
+            </h1>
+            <div>
+              <transition name="text-fade" mode="out-in">
+                <p 
+                  class="animated-text" 
+                  style="color:#fff!important;" 
+                  :class="{ 'fade-out': isFadingOut }"
+                  @animationend="changeText"
+                >
+                  {{ currentText }}
+                </p>
+              </transition>
+            </div>
+            
+            <br /><br />
+
+            <div class="cont">
+              <router-link style="text-align: center !important;" class="btn btn-base" to="/about">
+                SOBRE NOSOTROS
+              </router-link>
+            </div>
+            
           </div>
         </div>
       </div>
     </div>
+  </div>
+</div>
 
     <div v-else>
       <div class="banner-area banner-area-1 banner-bg-overlay banner-img">
@@ -772,82 +784,6 @@
   }
 }
 
-/*COMERCIO INTERNACIONAL*/
-
-/* banner hacia abajo */
-.banner-area-1 .banner-inner {
-  padding-top: 120px !important;
-  padding-bottom: 40px !important;
-}
-
-/* no quede pegado al menú */
-.title_1-2 {
-  margin-top: 40px !important;
-  margin-bottom: 25px !important;
-  line-height: 1.3 !important;
-}
-
-/* Ajustar el texto animado que aparece debajo del título */
-.title_1-2 + div .animated-text {
-  margin-top: 15px !important;
-  margin-bottom: 25px !important;
-}
-
-/* Ajustar el botón "SOBRE NOSOTROS" */
-.banner-area-1 .banner-inner .cont {
-  margin-top: 10px !important;
-}
-
-
-@media screen and (max-width: 991px) {
-  .banner-area-1 .banner-inner {
-    padding-top: 100px !important;
-  }
-  
-  .title_1-2 {
-    margin-top: 40px !important;
-    font-size: 36px !important;
-  }
-  
-  .title_1-2 + div .animated-text {
-    font-size: 20px !important;
-  }
-}
-
-@media screen and (max-width: 768px) {
-  .banner-area-1 .banner-inner {
-    padding-top: 80px !important;
-    padding-bottom: 30px !important;
-  }
-  
-  .title_1-2 {
-    margin-top: 30px !important;
-    font-size: 28px !important;
-  }
-  
-  .title_1-2 + div .animated-text {
-    font-size: 18px !important;
-    margin-bottom: 20px !important;
-  }
-  
-  .banner-area-1 .banner-inner .cont {
-    margin-top: 5px !important;
-  }
-}
-
-
-
-@media screen and (min-width: 1281px) {
-  .banner-area-1 .banner-inner {
-    padding-top: 140px !important;
-  }
-  
-  .title_1-2 {
-    margin-top: 70px !important;
-    font-size: 48px !important;
-  }
-}
-
 </style>
 
 <script>
@@ -869,7 +805,6 @@ export default {
       ],
       currentIndex: 0,
       isFadingOut: false,
-      // Datos de la API
       institucion: {},
       convocatorias: [],
       cursos: [],
@@ -909,7 +844,7 @@ export default {
     },
     
     imageUrl() {
-      return process.env.VUE_APP_UPLOADS_URL || 'https://servicioadministrador.upea.bo/uploads/'
+      return process.env.VUE_APP_UPLOADS_URL?.trim() || 'https://servicioadministrador.upea.bo'
     }
   },
 
@@ -1065,17 +1000,16 @@ export default {
       ).length
     },
 
-_renderFacebookWidget() {
-  const fbUrl = this.institucion?.institucion_facebook?.trim()
-  if (!fbUrl || fbUrl === '_') return
+    _renderFacebookWidget() {
+      const fbUrl = this.institucion?.institucion_facebook?.trim()
+      if (!fbUrl || fbUrl === '_') return
 
-  const container = document.getElementById("facebook")
-  if (!container) return
+      const container = document.getElementById("facebook")
+      if (!container) return
+      const fbSrc = `https://www.facebook.com/plugins/page.php?href=${encodeURIComponent(fbUrl)}&tabs=timeline&width=500&height=700&small_header=true&adapt_container_width=true&hide_cover=false&show_facepile=true&appId`
 
-  const fbSrc = `https://www.facebook.com/plugins/page.php?href=${encodeURIComponent(fbUrl)}&tabs=timeline&width=500&height=700&small_header=true&adapt_container_width=true&hide_cover=false&show_facepile=true&appId`
-
-  container.innerHTML = `<iframe src="${fbSrc}" width="100%" height="700" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>`
-}
+      container.innerHTML = `<iframe src="${fbSrc}" width="100%" height="700" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"></iframe>`
+    }
   },
 
   created() {

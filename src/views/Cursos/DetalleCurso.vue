@@ -24,11 +24,9 @@
         </div>
       </div>
     </div>
-
     <div class="main-blog-area pd-top-120 pd-bottom-90">
       <div class="container">
         <div class="row justify-content-center">
-
           <div class="col-lg-8 col-12" v-if="errorGet">
             <div class="text-center">
               <h1>Curso inexistente</h1>
@@ -38,7 +36,6 @@
               </button>
             </div>
           </div>
-
           <div class="col-lg-8 col-12" v-else-if="loading">
             <div class="text-center">
               <div class="spinner-border text-primary" role="status">
@@ -47,10 +44,8 @@
               <p class="mt-3">Cargando información del curso...</p>
             </div>
           </div>
-
           <div class="col-lg-8 col-12" v-else-if="curso.iddetalle_cursos_academicos">
             <div class="course-details-page">
-
               <div class="course-details-meta-list">
                 <div class="row">
                   <div class="col-12 mt-4 mt-md-0">
@@ -95,7 +90,6 @@
                   </div>
                 </div>
               </div>
-
               <div class="thumb">
                 <a 
                   :href="imageUrl + curso.det_img_portada" 
@@ -109,7 +103,6 @@
                   />
                 </a>
               </div>
-
               <div class="course-details-nav-tab text-center">
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                   <li class="nav-item">
@@ -140,7 +133,6 @@
                   </li>
                 </ul>
               </div>
-
               <div class="tab-content" id="myTabContent">
                 <div
                   class="tab-pane fade show active"
@@ -188,7 +180,7 @@
                             <li>
                               <a 
                                 v-if="fac.facebook_facilitador && fac.facebook_facilitador !== '_'"
-                                :href="fac.facebook_facilitador?.trim()" 
+                                :href="fac.facebook_facilitador.trim()" 
                                 target="_blank"
                               >
                                 <i class="fa fa-facebook" aria-hidden="true"></i>
@@ -226,6 +218,7 @@
           
         </div>
 
+        <!-- Sidebar -->
         <div class="row justify-content-center mt-5">
           <div class="col-lg-4 col-12">
             <div class="td-sidebar">
@@ -365,7 +358,6 @@ export default {
     return {
       idInstitucion: process.env.VUE_APP_ID_INSTITUCION || '22',
       curso: {},
-      
       loading: false,
       errorGet: false,
     };
@@ -375,7 +367,7 @@ export default {
     ...mapState(["url_api", "Institucion"]),
 
     imageUrl() {
-      return process.env.VUE_APP_UPLOADS_URL || 'https://servicioadministrador.upea.bo/uploads/'
+      return (process.env.VUE_APP_UPLOADS_URL || 'https://servicioadministrador.upea.bo').trim()
     }
   },
 
@@ -387,14 +379,11 @@ export default {
       try {
         const idCur = this.$route.params.idCur
         
-        // Opción A: Si hay endpoint específico para un curso
-        // const res = await api.get(`/cursos/${idCur}`)
-        
         const res = await api.get(`/institucion/${this.idInstitucion}/gacetaEventos`)
         const data = res.data
         
         const lista = data.cursos || []
-        this.curso = lista.find(c => c.iddetalle_cursos_academicos == idCur) || {}
+        this.curso = lista.find(c => String(c.iddetalle_cursos_academicos) === String(idCur)) || {}
 
         if (!this.curso.iddetalle_cursos_academicos) {
           this.errorGet = true

@@ -29,7 +29,6 @@
       <div class="container">
         <div class="row justify-content-center">
 
-          <!-- Error: Seminario no encontrado -->
           <div class="col-lg-8 col-12" v-if="errorGet">
             <div class="text-center">
               <h1>Seminario inexistente</h1>
@@ -40,7 +39,6 @@
             </div>
           </div>
 
-          <!-- Loading -->
           <div class="col-lg-8 col-12" v-else-if="loading">
             <div class="text-center">
               <div class="spinner-border text-primary" role="status">
@@ -50,11 +48,9 @@
             </div>
           </div>
 
-          <!-- Contenido del seminario -->
           <div class="col-lg-8 col-12" v-else-if="seminario.iddetalle_cursos_academicos">
             <div class="course-details-page">
 
-              <!-- Meta información -->
               <div class="course-details-meta-list">
                 <div class="row">
                   <div class="col-12 mt-4 mt-md-0">
@@ -100,12 +96,12 @@
                 </div>
               </div>
 
-              <!-- Imagen portada -->
               <div class="thumb">
                 <a 
                   :href="imageUrl + seminario.det_img_portada" 
                   target="_blank"
                 >
+
                   <img
                     :src="imageUrl + seminario.det_img_portada"
                     :alt="seminario.det_titulo"
@@ -114,8 +110,6 @@
                   />
                 </a>
               </div>
-
-              <!-- Tabs de navegación -->
               <div class="course-details-nav-tab text-center">
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                   <li class="nav-item">
@@ -146,10 +140,7 @@
                   </li>
                 </ul>
               </div>
-
-              <!-- Contenido de tabs -->
               <div class="tab-content" id="myTabContent">
-                <!-- Tab 1: Descripción -->
                 <div
                   class="tab-pane fade show active"
                   id="tab1"
@@ -172,7 +163,6 @@
                   </div>
                 </div>
 
-                <!-- Tab 3: Facilitadores -->
                 <div
                   class="tab-pane fade"
                   id="tab3"
@@ -187,6 +177,7 @@
                     >
                       <div class="single-team-inner">
                         <div class="thumb">
+
                           <img
                             :src="imageUrl + fac.foto_facilitador"
                             :alt="fac.nombre_facilitador"
@@ -195,6 +186,7 @@
                         </div>
                         <div class="details pt-5">
                           <ul class="team-social-media">
+                            <!-- Facebook -->
                             <li>
                               <a 
                                 v-if="fac.facebook_facilitador && fac.facebook_facilitador !== '_'"
@@ -232,10 +224,7 @@
               </div>
             </div>
           </div>
-          
         </div>
-
-        <!-- Sidebar -->
         <div class="row justify-content-center mt-5">
           <div class="col-lg-4 col-12">
             <div class="td-sidebar">
@@ -250,6 +239,7 @@
 </template>
 
 <style scoped>
+
 .bg-overlay-img {
   background-image: url("@/assets/Fondo2.jpg");
 }
@@ -383,7 +373,7 @@ export default {
     ...mapState(["url_api", "Institucion"]),
 
     imageUrl() {
-      return process.env.VUE_APP_UPLOADS_URL || 'https://servicioadministrador.upea.bo/uploads/'
+      return process.env.VUE_APP_UPLOADS_URL?.trim() || 'https://servicioadministrador.upea.bo'
     }
   },
 
@@ -394,7 +384,7 @@ export default {
       
       try {
         const idSem = this.$route.params.idCur
-        
+
         const res = await api.get(`/institucion/${this.idInstitucion}/gacetaEventos`)
         const data = res.data
         

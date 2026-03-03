@@ -1,6 +1,5 @@
 <template>
   <div id="about_d">
-    
     <div class="page-title-area bg-overlay bg-overlay-img banner-img">
       <div class="container">
         <div class="row">
@@ -12,19 +11,17 @@
         </div>
       </div>
     </div>
-
     <section id="nosotros">
       <div class="about-area about-right-bg-half bg-gray pd-top-50 pd-bottom-90 banner-img">
         <div class="container pd-top-60">
           <h2 class="title">Sobre la carrera</h2>
           <div class="row">
-            
+
             <div class="col-lg-6 bg-gray">
               <div class="section-title" style="overflow-y: auto; height: 40rem; border: 2px solid #fff;">
                 <p style="padding: 2rem!important;" class="content" v-html="institucion.institucion_sobre_ins"></p>
               </div>
             </div>
-          
             <div class="col-lg-6">
               <img src="@/assets/perfil.jpg" alt="fondo" />
             </div>
@@ -50,8 +47,6 @@
         </div>
       </div>
     </section>
-
-
     <section id="mision">
       <br>
       <div class="bg-cover about-area pd-top-50 pd-bottom-90 bg-cover-img">
@@ -74,8 +69,7 @@
                 </div>
               </div>
             </div>
-            
-            <!-- Visión -->
+
             <div class="col-lg-6 align-self-center mt-4 mt-lg-0">
               <div class="section-title style-bg mb-0" style="border: 2px solid #fff; padding: 2rem; border-radius: 20px; background-color: rgba(244, 244, 244, 0.8);">
                 <div class="single-list-inner mt-4">
@@ -128,10 +122,12 @@
                     <span> - {{ autoridad.cargo_autoridad }}</span>
                   </h5>
                   <ul class="team-social-media">
+
                     <li>
                       <a 
                         v-if="autoridad.celular_autoridad"
-                        :href="'https://wa.me/' + autoridad.celular_autoridad" 
+
+                        :href="'https://wa.me/' + autoridad.celular_autoridad.replace(/[^0-9]/g, '')" 
                         target="_blank"
                       >
                         <i class="fa fa-whatsapp" aria-hidden="true"></i>
@@ -140,12 +136,14 @@
                     <li>
                       <a 
                         v-if="autoridad.facebook_autoridad && autoridad.facebook_autoridad !== '_'"
+
                         :href="autoridad.facebook_autoridad?.trim()" 
                         target="_blank"
                       >
                         <i class="fa fa-facebook" aria-hidden="true"></i>
                       </a>
                     </li>
+
                     <li>
                       <a 
                         v-if="autoridad.twiter_autoridad && autoridad.twiter_autoridad !== '_'"
@@ -159,7 +157,7 @@
                 </div>
               </div>
             </div>
-            
+
             <nav class="col-12 td-page-navigation text-center mb-5 mb-lg-0" v-if="pager > 1">
               <ul class="pagination">
                 <li class="pagination-arrow disable">
@@ -183,8 +181,6 @@
         </div>
       </div>
     </section>
-
-
     <section id="contacto">
       <div>
         <div class="bg-cover bg-cover-img">
@@ -207,7 +203,7 @@
                     </p>
                     <p>
                       <b><i class="fa fa-envelope"></i> Correo 1: </b>
-                      {{ institucion.institucion_correo1 }}
+                      {{ institucion.institucion_correo1?.trim() }}
                     </p>
                     <p>
                       <b><i class="fa fa-facebook"></i> Facebook: </b>
@@ -215,6 +211,7 @@
                         {{ institucion.institucion_facebook?.trim() }}
                       </a>
                     </p>
+
                     <p>
                       <b><i class="fa fa-youtube"></i> Youtube: </b>
                       <a :href="institucion.institucion_youtube?.trim()" target="_blank">
@@ -227,8 +224,7 @@
             </div>
           </div>
         </div>
-        
-        <!-- Mapa de Google -->
+
         <div class="contact-g-map">
           <h2>O visítenos</h2>
           <h4>
@@ -250,6 +246,7 @@
 </template>
 
 <style scoped>
+
 .bg-cover-img {
   background-image: url("@/assets/fondo_upea.jpg");
   background-repeat: no-repeat;
@@ -294,14 +291,14 @@ export default {
   
   data() {
     return {
-
       idInstitucion: process.env.VUE_APP_ID_INSTITUCION || '22',
-      
+
       institucion: {},
       autoridades: [],
       NUM_RESULTS: 3,
       pag: 1,
       pager: 0,
+
       loading: {
         institucion: false,
         contenido: false
@@ -313,7 +310,7 @@ export default {
     ...mapState(["Institucion", "url_api"]),
 
     imageUrl() {
-      return process.env.VUE_APP_UPLOADS_URL || 'https://servicioadministrador.upea.bo/uploads/'
+      return process.env.VUE_APP_UPLOADS_URL?.trim() || 'https://servicioadministrador.upea.bo'
     }
   },
 
@@ -351,7 +348,6 @@ export default {
         this.$store.commit("loading") 
       }
     },
-
     _actualizarPager() {
       const total = this.autoridades?.length || 0
       this.pager = Math.ceil(total / this.NUM_RESULTS)
@@ -369,7 +365,6 @@ export default {
       return cleaned
     }
   },
-
   created() {
     this.$store.commit("loadOn")
 

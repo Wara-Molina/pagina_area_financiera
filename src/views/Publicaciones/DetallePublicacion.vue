@@ -45,7 +45,7 @@
               <p class="mt-3">Cargando información de la publicación...</p>
             </div>
           </div>
-          
+
           <div class="col-lg-8 col-12" v-else-if="publicacion.publicaciones_id">
             <div class="single-blog-inner mb-0">
               <div class="thumb">
@@ -53,6 +53,7 @@
                   :href="imageUrl + publicacion.publicaciones_imagen"
                   target="_blank"
                 >
+
                   <img
                     :src="imageUrl + publicacion.publicaciones_imagen"
                     :alt="publicacion.publicaciones_titulo"
@@ -78,10 +79,13 @@
               </div>
             </div>
             <div class="blog-content-inner">
+
               <p v-html="publicacion.publicaciones_descripcion"></p>
             </div>
           </div>
         </div>
+        
+        <!-- Sidebar -->
         <div class="row justify-content-center mt-5">
           <div class="col-lg-4 col-12">
             <div class="td-sidebar">
@@ -97,6 +101,7 @@
 </template>
 
 <style scoped>
+
 .bg-overlay-img {
   background-image: url("@/assets/Fondo2.jpg");
 }
@@ -155,7 +160,9 @@ export default {
   
   data() {
     return {
+
       idInstitucion: process.env.VUE_APP_ID_INSTITUCION || '22',
+
       publicacion: {},
       loading: false,
       errorGet: false,
@@ -166,26 +173,25 @@ export default {
     ...mapState(["url_api", "Institucion"]),
 
     imageUrl() {
-      return process.env.VUE_APP_UPLOADS_URL || 'https://servicioadministrador.upea.bo/uploads/'
+      return process.env.VUE_APP_UPLOADS_URL?.trim() || 'https://servicioadministrador.upea.bo'
     }
   },
 
   methods: {
+
     async getPublicacion() {
       this.loading = true
       this.errorGet = false
       
       try {
         const idPub = this.$route.params.idPub
-        
-        // Opción A: Si hay endpoint específico para una publicación
-        // const res = await api.get(`/publicaciones/${idPub}`)
+
         const res = await api.get(`/institucion/${this.idInstitucion}/recursos`)
         const data = res.data
-        
-        // Buscar la publicación por ID en upea_publicaciones
+
         const lista = data.upea_publicaciones || []
         this.publicacion = lista.find(p => p.publicaciones_id == idPub) || {}
+
         if (!this.publicacion.publicaciones_id) {
           this.errorGet = true
           console.warn('Publicación no encontrada con ID:', idPub)
@@ -230,6 +236,7 @@ export default {
       
       return `${fechaObj.getDate()} de ${meses[fechaObj.getMonth()]} de ${fechaObj.getFullYear()}`
     },
+
     _limpiarObjeto(obj) {
       if (!obj || typeof obj !== 'object') return obj
       const cleaned = { ...obj }

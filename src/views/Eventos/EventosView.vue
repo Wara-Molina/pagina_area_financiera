@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <div class="page-title-area bg-overlay bg-overlay-img banner-img">
       <div class="container">
         <div class="row">
@@ -18,13 +17,10 @@
         </div>
       </div>
     </div>
-
     <div class="main-team-area pd-top-120 pd-bottom-120">
       <div class="container">
         <div class="row">
-
           <div class="col-lg-8 col-12"></div>
-
           <div class="col-lg-4 col-12">
             <div class="td-sidebar">
               <div class="widget widget_search">
@@ -47,15 +43,15 @@
         </div>
         
         <div class="row justify-content-center">
-          
           <div class="col-12 row justify-content-center" v-if="searchGet">
 
             <div class="col-12 text-center" v-if="searchValues.length === 0">
-              <h3> No se encontraron resultados para "{{ search }}"</h3>
+              <h3>No se encontraron resultados para "{{ search }}"</h3>
               <button class="btn btn-base mt-3" @click="limpiarBusqueda">
                 Mostrar todos los eventos
               </button>
             </div>
+
             <div v-else class="col-12 row justify-content-center">
               <div class="col-12">
                 <p>{{ searchValues.length }} resultado(s) encontrado(s)</p>
@@ -70,6 +66,7 @@
                   <div class="media">
                     <div class="media-left">
                       <router-link :to="'/detalleEvento/' + ev.evento_id">
+
                         <img
                           :src="imageUrl + ev.evento_imagen"
                           :alt="ev.evento_titulo"
@@ -100,9 +97,10 @@
               </div>
             </div>
           </div>
+
           <div class="col-12 row justify-content-center" v-else>
             <div v-if="eventos.length === 0" class="col-12 text-center">
-              <h2> No hay eventos disponibles</h2>
+              <h2>No hay eventos disponibles</h2>
               <p class="text-muted">Pronto se agregarán nuevos eventos.</p>
             </div>
 
@@ -293,7 +291,6 @@ export default {
   data() {
     return {
       idInstitucion: process.env.VUE_APP_ID_INSTITUCION || '22',
-      
       eventos: [],
       search: "",
       searchGet: false,
@@ -309,7 +306,7 @@ export default {
     ...mapState(["url_api", "Institucion"]),
 
     imageUrl() {
-      return process.env.VUE_APP_UPLOADS_URL || 'https://servicioadministrador.upea.bo/uploads/'
+      return process.env.VUE_APP_UPLOADS_URL?.trim() || 'https://servicioadministrador.upea.bo'
     }
   },
 

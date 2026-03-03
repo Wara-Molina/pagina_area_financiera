@@ -1,5 +1,6 @@
 <template>
   <div>
+
     <div class="page-title-area bg-overlay bg-overlay-img banner-img">
       <div class="container">
         <div class="row">
@@ -40,21 +41,22 @@
           <div class="col-lg-8 col-12" v-else-if="loading">
             <div class="text-center">
               <div class="spinner-border text-primary" role="status">
-                <span class="sr-only">Cargando PDF...</span>
+                <span class="sr-only">Cargando...</span>
               </div>
               <p class="mt-3">Cargando documento...</p>
             </div>
           </div>
+
           <div class="col-lg-8 col-12" v-else-if="gaceta.gaceta_id">
             <div class="single-blog-inner mb-0">
               <div class="thumb">
                 <a 
-                  :href="imageUrl + gaceta.gaceta_documento" 
+                  :href="imageUrl + gaceta.gaceta_documento?.trim()" 
                   target="_blank"
                   class="pdf-link"
                 >
                   <vue-pdf-embed
-                    :source="imageUrl + gaceta.gaceta_documento"
+                    :source="imageUrl + gaceta.gaceta_documento?.trim()"
                     :disableTextLayer="true"
                     :height="700"
                   />
@@ -77,12 +79,14 @@
               </div>
             </div>
             <div class="blog-content-inner mt-4">
+              <!-- ✅ Descripción con HTML -->
               <p v-if="gaceta.gaceta_descripcion" v-html="gaceta.gaceta_descripcion"></p>
             </div>
           </div>
           
         </div>
 
+        <!-- Sidebar -->
         <div class="row justify-content-center mt-5">
           <div class="col-lg-4 col-12">
             <div class="td-sidebar">
@@ -98,6 +102,7 @@
 </template>
 
 <style scoped>
+
 .bg-overlay-img {
   background-image: url("@/assets/Fondo2.jpg");
 }
@@ -183,9 +188,7 @@ export default {
     return {
 
       idInstitucion: process.env.VUE_APP_ID_INSTITUCION || '22',
-
       gaceta: {},
-
       loading: false,
       errorGet: false,
     };
@@ -193,8 +196,9 @@ export default {
   
   computed: {
     ...mapState(["url_api", "Institucion"]),
+
     imageUrl() {
-      return process.env.VUE_APP_UPLOADS_URL || 'https://servicioadministrador.upea.bo/uploads/'
+      return process.env.VUE_APP_UPLOADS_URL?.trim() || 'https://servicioadministrador.upea.bo'
     }
   },
 
@@ -205,10 +209,6 @@ export default {
       
       try {
         const idGac = this.$route.params.idGac
-        
-        // Opción A: Si hay endpoint específico para una gaceta
-        // const res = await api.get(`/gacetas/${idGac}`)
-
         const res = await api.get(`/institucion/${this.idInstitucion}/gacetaEventos`)
         const data = res.data
 
@@ -224,7 +224,7 @@ export default {
         this.gaceta = this._limpiarObjeto(this.gaceta)
         
       } catch (error) {
-        console.error(' Error cargando gaceta:', error)
+        console.error('Error cargando gaceta:', error)
         this.errorGet = true
 
         if (error.response?.status === 404) {

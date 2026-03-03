@@ -1,6 +1,5 @@
 <template>
   <div id="investigacion">
-    
     <div class="page-title-area bg-overlay bg-overlay-img banner-img">
       <div class="container">
         <div class="row">
@@ -20,7 +19,6 @@
         </div>
       </div>
     </div>
-
     <div class="main-blog-area pd-top-120 pd-bottom-120">
       <div class="container">
         <div class="row justify-content-center">
@@ -63,7 +61,6 @@
               </div>
             </div>
           </div>
-
           <div class="col-lg-4 col-12">
             <div class="td-sidebar">
               <SidebarCustom></SidebarCustom>
@@ -154,6 +151,7 @@ export default {
   data() {
     return {
       idInstitucion: process.env.VUE_APP_ID_INSTITUCION || '22',
+
       institucion: {},
       loading: false
     };

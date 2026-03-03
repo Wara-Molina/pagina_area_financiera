@@ -1,13 +1,12 @@
 <template>
   <div>
-
     <div class="page-title-area bg-overlay bg-overlay-img banner-img">
       <div class="container">
         <div class="row">
           <div class="col-lg-7">
             <div class="breadcrumb-inner">
               <h2 class="page-title" style="color: #fff !important;">
-                EVENTOS ACONTECIDOS EN LA CARRERA
+                SERVICIOS DE LA CARRERA
               </h2>
               <ul class="page-list">
                 <li><router-link to="/">INICIO</router-link></li>
@@ -18,13 +17,13 @@
         </div>
       </div>
     </div>
-
     <div class="main-team-area pd-top-90 pd-bottom-90">
       <div class="container">
         <div class="row">
 
           <div class="col-lg-8 col-12"></div>
 
+          <!-- Barra de búsqueda -->
           <div class="col-lg-4 col-12">
             <div class="td-sidebar">
               <div class="widget widget_search">
@@ -45,7 +44,6 @@
               </div>
             </div>
           </div>
-
           <div v-if="searchGet" class="col-12 pd-bottom-90">
             <div v-if="searchValues.length === 0" class="col-12 text-center">
               <h3>No se encontraron resultados para "{{ search }}"</h3>
@@ -100,7 +98,6 @@
               </div>
             </div>
           </div>
-
           <div v-else class="col-12 row justify-content-center">
             
             <!-- Estado vacío -->
@@ -153,7 +150,6 @@
                   </div>
                 </div>
               </div>
-
               <nav class="col-12 td-page-navigation text-center mb-5 mb-lg-0" v-if="pager > 1">
                 <ul class="pagination">
                   <li class="pagination-arrow disable">
@@ -270,7 +266,6 @@ export default {
   data() {
     return {
       idInstitucion: process.env.VUE_APP_ID_INSTITUCION || '22',
-      
       servicios: [],
       search: "",
       searchGet: false,
@@ -285,7 +280,7 @@ export default {
   computed: {
     ...mapState(["url_api", "Institucion"]),
     imageUrl() {
-      return process.env.VUE_APP_UPLOADS_URL || 'https://servicioadministrador.upea.bo/uploads/'
+      return process.env.VUE_APP_UPLOADS_URL?.trim() || 'https://servicioadministrador.upea.bo'
     }
   },
 
@@ -296,7 +291,6 @@ export default {
         const res = await api.get(`/institucion/${this.idInstitucion}/gacetaEventos`)
         const data = res.data
         const lista = data.serviciosCarrera || []
-
         this.servicios = lista
           .filter(serv => serv.serv_active === "1" || serv.serv_active === 1)
           .map(this._limpiarObjeto)
@@ -304,14 +298,13 @@ export default {
         this._actualizarPager()
         
       } catch (error) {
-        console.error('❌ Error cargando servicios:', error)
+        console.error('Error cargando servicios:', error)
         this.servicios = []
       } finally {
         this.loading = false
         this.$store.commit("loading")
       }
     },
-
     _actualizarPager() {
       const total = this.servicios?.length || 0
       this.pager = Math.ceil(total / this.NUM_RESULTS)
@@ -333,13 +326,13 @@ export default {
         this.limpiarBusqueda()
       }
     },
-
     limpiarBusqueda() {
       this.search = ""
       this.searchGet = false
       this.searchValues = []
       this.pag = 1
     },
+
     formatearFecha(fecha) {
       if (!fecha) return ''
       if (typeof fecha === 'string' && fecha.includes('de')) return fecha
@@ -379,10 +372,6 @@ export default {
   created() {
     this.$store.commit("loadOn")
     this.getServiciosAll()
-  },
-
-  mounted() {
-    // 
   },
 
   beforeUnmount() {

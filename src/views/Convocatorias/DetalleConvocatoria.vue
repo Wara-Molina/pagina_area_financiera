@@ -24,10 +24,9 @@
         </div>
       </div>
     </div>
-
     <div class="main-blog-area pd-top-120 pd-bottom-120">
       <div class="container">
-        <div class="row justify-content-center">
+        <div class="row justify-content-center"> 
           <div class="col-lg-8 col-12" v-if="errorGet">
             <div class="text-center">
               <h1>Convocatoria inexistente</h1>
@@ -37,7 +36,6 @@
               </button>
             </div>
           </div>
-
           <div class="col-lg-8 col-12" v-else-if="loading">
             <div class="text-center">
               <div class="spinner-border text-primary" role="status">
@@ -79,7 +77,6 @@
             </div>
             <div class="blog-content-inner">
               <p v-html="convocatoria.con_descripcion"></p>
-
               <div v-if="convocatoria.con_referencia" class="mt-4">
                 <b><i class="fa fa-info-circle"></i> Referencia: </b>
                 {{ convocatoria.con_referencia }}
@@ -88,6 +85,7 @@
           </div>
           
         </div>
+
         <div class="row justify-content-center mt-5">
           <div class="col-lg-4 col-12">
             <div class="td-sidebar">
@@ -103,6 +101,7 @@
 </template>
 
 <style scoped>
+
 .bg-overlay-img {
   background-image: url("@/assets/Fondo2.jpg");
 }
@@ -175,9 +174,8 @@ export default {
   
   computed: {
     ...mapState(["url_api", "Institucion"]),
-
     imageUrl() {
-      return process.env.VUE_APP_UPLOADS_URL || 'https://servicioadministrador.upea.bo/uploads/'
+      return process.env.VUE_APP_UPLOADS_URL?.trim() || 'https://servicioadministrador.upea.bo'
     }
   },
 
@@ -188,10 +186,6 @@ export default {
       
       try {
         const idConv = this.$route.params.idConv
-        
-        // Opción A: Si hay endpoint específico para una convocatoria
-        // const res = await api.get(`/convocatorias/${idConv}`)
-
         const res = await api.get(`/institucion/${this.idInstitucion}/gacetaEventos`)
         const data = res.data
         const lista = data.convocatorias || []
@@ -202,7 +196,6 @@ export default {
           console.warn('⚠️ Convocatoria no encontrada con ID:', idConv)
           return
         }
-
         this.convocatoria = this._limpiarObjeto(this.convocatoria)
         
       } catch (error) {
@@ -219,6 +212,7 @@ export default {
         this.$store.commit("loading")
       }
     },
+
     formatearFecha(fecha) {
       if (!fecha) return ''
 
@@ -254,6 +248,7 @@ export default {
       })
       return cleaned
     },
+
     clickBack() {
       this.$store.commit("clickLink")
       this.$router.go(-1)

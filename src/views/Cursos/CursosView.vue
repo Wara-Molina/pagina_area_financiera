@@ -1,6 +1,5 @@
 <template>
   <div>
-    
     <div class="page-title-area bg-overlay bg-overlay-img banner-img">
       <div class="container">
         <div class="row">
@@ -18,13 +17,10 @@
         </div>
       </div>
     </div>
-
     <div class="course-area pd-top-120 pd-bottom-120">
       <div class="container">
         <div class="row">
           <div class="col-lg-8 col-12">
-            
-            <!--  BÚSQUEDA -->
             <div v-if="searchGet">
               <h3 v-if="searchValues.length === 0" class="text-center">
                  No se encontraron resultados para "{{ search }}"
@@ -35,31 +31,32 @@
                   <hr />
                 </div>
 
-                <template v-for="(cur, index) of searchValues" :key="cur.iddetalle_cursos_academicos || index">
-                  <div class="col-12 col-lg-6">
-                    <div class="single-course-inner">
+                <template v-for="cur of searchValues" :key="cur.iddetalle_cursos_academicos">
+                  <div class="col-12 col-lg-6 mb-4">
+                    <div class="single-course-inner" :class="getCourseTypeClass(cur)">
                       <div class="thumb">
                         <router-link :to="'/detalleCurso/' + cur.iddetalle_cursos_academicos" @click="$store.commit('clickLink')">
                           <img :src="imageUrl + cur.det_img_portada" :alt="cur.det_titulo" loading="lazy" />
                         </router-link>
+                        <span class="price">{{ cur.det_costo }} Bs</span>
                         <div class="cat-area">
                           <span class="cat bg-base-2">{{ cur.tipo_curso_otro?.tipo_conv_curso_nombre }}</span>
                         </div>
                       </div>
                       <div class="details">
-                        <span class="price">{{ cur.det_costo }} Bs</span>
                         <p class="status">
                           <i class="fa fa-clock-o"></i> 
-                          <b>{{ cur.det_carga_horaria }}</b> hrs académicas</p>
+                          <b>{{ cur.det_carga_horaria }}</b> hrs académicas
+                        </p>
                         <div class="details-inner">
                           <h5>
                             <router-link :to="'/detalleCurso/' + cur.iddetalle_cursos_academicos" @click="$store.commit('clickLink')">
                               {{ cur.det_titulo }}
                             </router-link>
                           </h5>
-
+                          <p class="descripcion-curso" v-html="cur.det_descripcion"></p>
                           <template v-if="cur.facilitadores && cur.facilitadores.length > 0">
-                            <template v-for="(fac, facIndex) of cur.facilitadores" :key="fac.facilitador_id || facIndex">
+                            <template v-for="fac of cur.facilitadores" :key="fac.facilitador_id">
                               <div class="author media">
                                 <div class="media-left">
                                   <img :src="imageUrl + fac.foto_facilitador" :alt="fac.nombre_facilitador" />
@@ -70,11 +67,10 @@
                               </div>
                             </template>
                           </template>
-                          
                         </div>
                         <div class="bottom-area">
-                          <div class="row">
-                            <div class="col-6 align-self-center">
+                          <div class="row align-items-center">
+                            <div class="col-6">
                               <div class="rating-inner">
                                 <i class="fa fa-star"></i>
                                 <i class="fa fa-star"></i>
@@ -83,8 +79,15 @@
                                 <i class="fa fa-star"></i>
                               </div>
                             </div>
-                            <div class="col-6 align-self-center text-right">
-                              <router-link :to="'/detalleCurso/' + cur.iddetalle_cursos_academicos" @click="$store.commit('clickLink')" class="readmore-text">Leer más</router-link>
+                            <div class="col-6 text-right">
+                              <router-link 
+                                :to="'/detalleCurso/' + cur.iddetalle_cursos_academicos" 
+                                @click="$store.commit('clickLink')" 
+                                class="btn-leer-mas"
+                              >
+                                Leer más
+                                <i class="fa fa-arrow-right"></i>
+                              </router-link>
                             </div>
                           </div>
                         </div>
@@ -94,39 +97,45 @@
                 </template>
               </div>
             </div>
-
             <div v-else class="row">
-              <div v-if="cursos.length === 0" class="col-12 text-center">
-                <h2 class="aligncenter"> Sin {{ tipo.toLowerCase() }} disponibles</h2>
+              <div v-if="cursos.length === 0 && loading" class="col-12 text-center">
+                <div class="spinner-border text-primary" role="status">
+                  <span class="sr-only">Cargando...</span>
+                </div>
+                <p class="mt-3">Cargando cursos...</p>
+              </div>
+              <div v-else-if="cursos.length === 0" class="col-12 text-center">
+                <h2 class="aligncenter">Sin {{ tipo.toLowerCase() }} disponibles</h2>
                 <p class="text-muted">Pronto se agregarán nuevos cursos.</p>
               </div>
               <div v-else class="row justify-content-center">
 
-                <template v-for="(cur, index) of cursos" :key="cur.iddetalle_cursos_academicos || index">
-                  <div class="col-12 col-lg-6" v-show="(pag - 1) * NUM_RESULTS <= index && pag * NUM_RESULTS > index">
-                    <div class="single-course-inner">
+                <template v-for="cur of cursos" :key="cur.iddetalle_cursos_academicos">
+                  <div class="col-12 col-lg-6 mb-4">
+                    <div class="single-course-inner" :class="getCourseTypeClass(cur)">
                       <div class="thumb">
                         <router-link :to="'/detalleCurso/' + cur.iddetalle_cursos_academicos" @click="$store.commit('clickLink')">
                           <img :src="imageUrl + cur.det_img_portada" :alt="cur.det_titulo" loading="lazy" />
                         </router-link>
+                        <span class="price">{{ cur.det_costo }} Bs</span>
                         <div class="cat-area">
                           <span class="cat bg-base-2">{{ cur.tipo_curso_otro?.tipo_conv_curso_nombre }}</span>
                         </div>
                       </div>
                       <div class="details">
-                        <span class="price">{{ cur.det_costo }} Bs</span>
                         <p class="status">
                           <i class="fa fa-clock-o"></i> 
-                          <b>{{ cur.det_carga_horaria }}</b> hrs académicas</p>
+                          <b>{{ cur.det_carga_horaria }}</b> hrs académicas
+                        </p>
                         <div class="details-inner">
                           <h5>
                             <router-link :to="'/detalleCurso/' + cur.iddetalle_cursos_academicos" @click="$store.commit('clickLink')">
                               {{ cur.det_titulo }}
                             </router-link>
                           </h5>
-
+                          <p class="descripcion-curso" v-html="cur.det_descripcion"></p>
                           <template v-if="cur.facilitadores && cur.facilitadores.length > 0">
-                            <template v-for="(fac, facIndex) of cur.facilitadores" :key="fac.facilitador_id || facIndex">
+                            <template v-for="fac of cur.facilitadores" :key="fac.facilitador_id">
                               <div class="author media">
                                 <div class="media-left">
                                   <img :src="imageUrl + fac.foto_facilitador" :alt="fac.nombre_facilitador" />
@@ -137,11 +146,10 @@
                               </div>
                             </template>
                           </template>
-                          
                         </div>
                         <div class="bottom-area">
-                          <div class="row">
-                            <div class="col-6 align-self-center">
+                          <div class="row align-items-center">
+                            <div class="col-6">
                               <div class="rating-inner">
                                 <i class="fa fa-star"></i>
                                 <i class="fa fa-star"></i>
@@ -150,8 +158,15 @@
                                 <i class="fa fa-star"></i>
                               </div>
                             </div>
-                            <div class="col-6 align-self-center text-right">
-                              <router-link :to="'/detalleCurso/' + cur.iddetalle_cursos_academicos" @click="$store.commit('clickLink')" class="readmore-text">Leer más</router-link>
+                            <div class="col-6 text-right">
+                              <router-link 
+                                :to="'/detalleCurso/' + cur.iddetalle_cursos_academicos" 
+                                @click="$store.commit('clickLink')" 
+                                class="btn-leer-mas"
+                              >
+                                Leer más
+                                <i class="fa fa-arrow-right"></i>
+                              </router-link>
                             </div>
                           </div>
                         </div>
@@ -159,7 +174,6 @@
                     </div>
                   </div>
                 </template>
-
                 <nav class="col-12 td-page-navigation text-center mb-5 mb-lg-0" v-if="pager > 1">
                   <ul class="pagination">
                     <li class="pagination-arrow disable">
@@ -180,8 +194,6 @@
               </div>
             </div>
           </div>
-          
-          <!-- Sidebar -->
           <div class="col-lg-4 col-12">
             <div class="td-sidebar">
               <div class="widget widget_search">
@@ -221,36 +233,256 @@
   border-radius: 4px; 
   cursor: pointer; 
 }
-.single-course-inner img { 
-  width: 100%; 
-  height: 200px; 
-  object-fit: cover; 
-  border-radius: 4px; 
+
+.single-course-inner.curso-type {
+  min-height: 0px;
 }
+
+.single-course-inner.curso-type .thumb {
+  height: 200px;
+}
+
+.single-course-inner.curso-type .price {
+  width: 70px;
+  height: 70px;
+  font-size: 1.70rem;
+}
+
+.single-course-inner.curso-type .details-inner h5 {
+  font-size: 1.60rem;
+}
+
+.single-course-inner.curso-type .descripcion-curso {
+  font-size: 1.50rem;
+}
+
+.single-course-inner.curso-type .status {
+  font-size: 1.50rem;
+}
+
+.single-course-inner.seminario-type {
+  min-height: 470px;
+}
+
+.single-course-inner.seminario-type .thumb {
+  height: 200px;
+}
+
+.single-course-inner.seminario-type .price {
+  width: 65px;
+  height: 65px;
+  font-size: 1.60rem;
+}
+
+.single-course-inner.seminario-type .details-inner h5 {
+  font-size: 1.50rem;
+}
+
+.single-course-inner.seminario-type .descripcion-curso {
+  font-size: 1.50rem;
+}
+
+.single-course-inner.seminario-type .status {
+  font-size: 1.30rem;
+}
+
+/* Estilos base compartidos */
+.col-lg-6 {
+  min-width: 300px;
+}
+
+.single-course-inner {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: white;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.single-course-inner:hover {
+  box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+  transform: translateY(-3px);
+}
+
+.single-course-inner .thumb {
+  position: relative;
+  overflow: hidden;
+}
+
+.single-course-inner .thumb img {
+  width: 100%; 
+  height: 100%; 
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.single-course-inner:hover .thumb img {
+  transform: scale(1.05);
+}
+
+.single-course-inner .price {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: var(--main-color-1, #007bff);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  z-index: 2;
+}
+
+.single-course-inner .cat-area {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  z-index: 2;
+}
+
+.single-course-inner .cat {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  background: #ffc107;
+  color: #000;
+}
+
+.single-course-inner .details {
+  padding: 1.25rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.single-course-inner .status {
+  margin: 0 0 1rem 0;
+  color: #666;
+}
+
+.single-course-inner .details-inner {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.single-course-inner .details-inner h5 {
+  margin: 0.75rem 0;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.descripcion-curso {
+  color: #666;
+  margin: 0.75rem 0;
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.descripcion-curso p {
+  margin: 0;
+}
+
+.single-course-inner .author.media {
+  margin-top: 0.5rem;
+  padding: 0.4rem;
+  background: rgba(0,0,0,0.03);
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.single-course-inner .author.media img {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.single-course-inner .author.media p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.single-course-inner .bottom-area {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid #eee;
+}
+
+.rating-inner {
+  display: flex;
+  gap: 4px;
+  color: #ff9800;
+  font-size: 1.50rem;
+}
+.btn-leer-mas {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.25rem;
+  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+  color: #000;
+  text-decoration: none;
+  border-radius: 25px;
+  font-weight: 600;
+  font-size: 1.50rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
+  border: 2px solid transparent;
+}
+
+.btn-leer-mas:hover {
+  background: linear-gradient(135deg, #ff9800 0%, #ffc107 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.4);
+  color: #000;
+}
+
+.btn-leer-mas i {
+  font-size: 0.9rem;
+  transition: transform 0.3s ease;
+}
+
+.btn-leer-mas:hover i {
+  transform: translateX(4px);
+}
+
 .text-center h2, .text-center h3 { 
   color: #666; 
   padding: 2rem; 
 }
-.price { 
-  font-size: 1.5rem; 
-  font-weight: bold; 
-  color: var(--main-color-1, #007bff); 
-}
-.author.media { 
-  margin-top: 0.5rem; 
-  padding: 0.5rem; 
-  background: rgba(0,0,0,0.05); 
-  border-radius: 4px; 
-  display: flex; 
-  align-items: center; 
-  gap: 0.75rem; 
-}
-.author.media img { 
-  width: 40px; 
-  height: 40px; 
-  border-radius: 50%; 
-  object-fit: cover; 
+
+@media (max-width: 768px) {
+  .col-lg-6 {
+    min-width: 100%;
   }
+  
+  .single-course-inner {
+    min-height: 440px;
+  }
+  
+  .single-course-inner .thumb {
+    height: 180px;
+  }
+  
+  .btn-leer-mas {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+  }
+}
 </style>
 
 <script>
@@ -264,7 +496,7 @@ export default {
   data() {
     return {
       idInstitucion: process.env.VUE_APP_ID_INSTITUCION || '22',
-      tipo: "",
+      tipo: "CURSOS",
       cursos: [],
       tipoCursoId: null,
       search: "",
@@ -279,85 +511,167 @@ export default {
   computed: {
     ...mapState(["url_api", "Institucion"]),
     imageUrl() {
-      return process.env.VUE_APP_UPLOADS_URL || 'https://servicioadministrador.upea.bo/uploads/'
+      return (process.env.VUE_APP_UPLOADS_URL || 'https://servicioadministrador.upea.bo').trim()
     }
   },
   watch: {
     '$route.params.tipo_cur': {
       immediate: true,
-      handler(nuevoTipo) { if (nuevoTipo) this.cargarDatos(nuevoTipo) }
+      handler(nuevoTipo) { 
+        if (nuevoTipo) this.cargarDatos(nuevoTipo) 
+      }
+    },
+    '$store.state.MenuCur': {
+      immediate: true,
+      handler(newVal) {
+        if (newVal && newVal.length > 0 && this.$route.params.tipo_cur) {
+          this.cargarDatos(this.$route.params.tipo_cur)
+        }
+      }
     }
   },
   methods: {
+    getCourseTypeClass(cur) {
+      const tipoNombre = cur.tipo_curso_otro?.tipo_conv_curso_nombre?.toUpperCase() || ''
+      if (tipoNombre.includes('SEMINAR')) {
+        return 'seminario-type'
+      }
+      return 'curso-type'
+    },
+    
     async cargarDatos(tipoCursoId) {
       this.loading = true
       try {
         await this.getTipoCur(tipoCursoId)
         await this.getCursos()
-      } catch (error) { console.error('Error:', error) }
-      finally { this.loading = false; this.$store.commit("loading") }
+      } catch (error) { 
+        console.error('Error cargando datos:', error) 
+      } finally { 
+        this.loading = false
+        this.$store.commit("loading") 
+      }
     },
+    
     async getTipoCur(tipo_cur) {
       try {
+        if (!tipo_cur) {
+          this.tipo = "CURSOS"
+          this.tipoCursoId = null
+          return
+        }
+        
         const res = await api.get(`/institucion/${this.idInstitucion}/gacetaEventos`)
         const cursos = res.data.cursos || []
-        const tipos = {}
-        cursos.forEach(c => { const t = c.tipo_curso_otro?.tipo_conv_curso_nombre; 
-          if (t && !tipos[t]) tipos[t] = c.tipo_curso_otro })
-        const encontrado = Object.values(tipos).find(t => t.idtipo_curso_otros == tipo_cur || t.tipo_conv_curso_nombre?.toUpperCase() === tipo_cur.toUpperCase())
-        this.tipo = encontrado?.tipo_conv_curso_nombre || tipo_cur.toUpperCase()
+        
+        const cursoEncontrado = cursos.find(c => {
+          const tipoId = c.idtipo_curso_otros
+          return String(tipoId) === String(tipo_cur)
+        })
+        
+        if (cursoEncontrado && cursoEncontrado.tipo_curso_otro) {
+          this.tipo = cursoEncontrado.tipo_curso_otro.tipo_conv_curso_nombre.toUpperCase()
+          this.tipoCursoId = cursoEncontrado.idtipo_curso_otros
+        } else {
+          const porNombre = cursos.find(c => 
+            c.tipo_curso_otro?.tipo_conv_curso_nombre?.toUpperCase() === String(tipo_cur).toUpperCase()
+          )
+          if (porNombre) {
+            this.tipo = porNombre.tipo_curso_otro.tipo_conv_curso_nombre.toUpperCase()
+            this.tipoCursoId = porNombre.idtipo_curso_otros
+          } else {
+            this.tipo = "CURSOS"
+            this.tipoCursoId = tipo_cur
+          }
+        }
+      } catch (e) { 
+        console.error('Error en getTipoCur:', e)
+        this.tipo = "CURSOS"
         this.tipoCursoId = tipo_cur
-      } catch (e) { console.error(e); 
-        this.tipo = tipo_cur.toUpperCase() }
+      }
     },
+    
     async getCursos() {
       try {
         const res = await api.get(`/institucion/${this.idInstitucion}/gacetaEventos`)
-        const lista = res.data.cursos || []
-        this.cursos = lista.filter(c => c.det_estado == "1" || c.det_estado == 1)
-          .filter(c => !this.tipoCursoId || c.tipo_curso_otro?.tipo_conv_curso_nombre === this.tipo || c.tipo_curso_otro?.idtipo_curso_otros == this.tipoCursoId)
+        const data = res.data
+        const lista = data.cursos || []
+        
+        this.cursos = lista
+          .filter(c => {
+            const estadoActivo = (c.det_estado == "1" || c.det_estado == 1)
+            if (!estadoActivo) return false
+            if (!this.tipoCursoId && !this.tipo) return true
+            
+            const tipoObj = c.tipo_curso_otro || {}
+            const cursoTipoId = tipoObj.idtipo_curso_otros
+            const cursoTipoNombre = tipoObj.tipo_conv_curso_nombre?.toUpperCase()
+            
+            const coincidePorId = this.tipoCursoId && String(cursoTipoId) === String(this.tipoCursoId)
+            const coincidePorNombre = this.tipo && cursoTipoNombre === this.tipo.toUpperCase()
+            
+            return coincidePorId || coincidePorNombre
+          })
           .map(this._limpiarObjeto)
+        
         this._actualizarPager()
-      } catch (e) { console.error(e); this.cursos = [] }
+      } catch (e) { 
+        console.error('Error en getCursos:', e)
+        this.cursos = [] 
+      }
     },
-    _actualizarPager() 
-    { 
-      const t = this.cursos?.length || 0; 
-      this.pager = Math.ceil(t / this.NUM_RESULTS); 
-      if (this.pag > this.pager && this.pager > 0) this.pag = this.pager 
+    
+    _actualizarPager() {
+      const t = this.cursos?.length || 0
+      this.pager = Math.ceil(t / this.NUM_RESULTS)
+      if (this.pag > this.pager && this.pager > 0) this.pag = this.pager
     },
-    buscar() { 
-      const q = this.search.trim().toUpperCase(); 
-      if (q) { this.searchGet = true; 
-        this.searchValues = this.cursos.filter(c => c.det_titulo?.toUpperCase().includes(q) || c.det_descripcion?.toUpperCase().includes(q)); 
-        this.pag = 1 } else { this.limpiarBusqueda() } 
-      },
-    limpiarBusqueda() 
-    { 
-    this.search = ""; 
-    this.searchGet = false; this.searchValues = []; 
-    this.pag = 1 
+    
+    buscar() {
+      const q = this.search.trim().toUpperCase()
+      if (q) {
+        this.searchGet = true
+        this.searchValues = this.cursos.filter(c => 
+          c.det_titulo?.toUpperCase().includes(q) || 
+          c.det_descripcion?.toUpperCase().includes(q)
+        )
+        this.pag = 1
+      } else {
+        this.limpiarBusqueda()
+      }
     },
-    _limpiarObjeto(obj) { 
-      if (!obj || typeof obj !== 'object') return obj; 
-      const c = {...obj}; 
-      Object.keys(c).forEach(k => { if (typeof c[k] === 'string') c[k] = c[k].trim(); 
-      else if (c[k] && typeof c[k] === 'object' && !Array.isArray(c[k])) c[k] = this._limpiarObjeto(c[k]) }); 
-      return c 
+    
+    limpiarBusqueda() {
+      this.search = ""
+      this.searchGet = false
+      this.searchValues = []
+      this.pag = 1
     },
-    clickBack() { 
-      this.$store.commit("clickLink"); 
-      this.$router.go(-1) 
+    
+    _limpiarObjeto(obj) {
+      if (!obj || typeof obj !== 'object') return obj
+      const c = {...obj}
+      Object.keys(c).forEach(k => { 
+        if (typeof c[k] === 'string') c[k] = c[k].trim()
+        else if (c[k] && typeof c[k] === 'object' && !Array.isArray(c[k])) 
+          c[k] = this._limpiarObjeto(c[k])
+      })
+      return c
+    },
+    
+    clickBack() {
+      this.$store.commit("clickLink")
+      this.$router.go(-1)
     }
   },
-  created() { 
-    this.$store.commit("loadOn"); 
-    if (this.$route.params.tipo_cur) this.cargarDatos(this.$route.params.tipo_cur) 
+  created() {
+    this.$store.commit("loadOn")
+    if (this.$route.params.tipo_cur) {
+      this.cargarDatos(this.$route.params.tipo_cur)
+    }
   },
-  beforeUnmount() { 
-    this.limpiarBusqueda(); 
-    this.cursos = []; 
-    this.tipo = "" 
+  beforeUnmount() {
+    this.limpiarBusqueda()
+    this.cursos = []
   }
 };
 </script>

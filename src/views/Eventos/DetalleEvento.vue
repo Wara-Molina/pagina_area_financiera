@@ -26,7 +26,6 @@
     <div class="main-blog-area pd-top-120 pd-bottom-120">
       <div class="container">
         <div class="row justify-content-center">
-
           <div class="col-lg-8 col-12" v-if="errorGet">
             <div class="text-center">
               <h1>Evento inexistente</h1>
@@ -36,7 +35,6 @@
               </button>
             </div>
           </div>
-
           <div class="col-lg-8 col-12" v-else-if="loading">
             <div class="text-center">
               <div class="spinner-border text-primary" role="status">
@@ -45,7 +43,6 @@
               <p class="mt-3">Cargando información del evento...</p>
             </div>
           </div>
-
           <div class="col-lg-8 col-12" v-else-if="evento.evento_id">
             <div class="single-blog-inner mb-0">
               <div class="details">
@@ -84,8 +81,7 @@
             <div class="blog-content-inner">
               <h4>Descripción del Evento</h4>
               <p class="mt-0" v-html="evento.evento_descripcion"></p>
-              
-              <!-- 📍 Ubicación -->
+
               <div v-if="evento.evento_lugar" class="mt-4">
                 <b>
                   <i class="fa fa-map-marker"></i> 
@@ -246,7 +242,6 @@
   object-fit: cover;
 }
 
-/* Contenido */
 .blog-content-inner p {
   line-height: 1.8;
   font-size: 1.05rem;
@@ -272,7 +267,6 @@ export default {
   
   data() {
     return {
-
       idInstitucion: process.env.VUE_APP_ID_INSTITUCION || '22',
       evento: {},
       loading: false,
@@ -285,9 +279,8 @@ export default {
   
   computed: {
     ...mapState(["url_api", "Institucion"]),
-
     imageUrl() {
-      return process.env.VUE_APP_UPLOADS_URL || 'https://servicioadministrador.upea.bo/uploads/'
+      return process.env.VUE_APP_UPLOADS_URL?.trim() || 'https://servicioadministrador.upea.bo'
     }
   },
 
@@ -298,10 +291,6 @@ export default {
       
       try {
         const idEv = this.$route.params.idEv
-        
-        // Opción A: Si hay endpoint específico para un evento
-        // const res = await api.get(`/eventos/${idEv}`)
-
         const res = await api.get(`/institucion/${this.idInstitucion}/gacetaEventos`)
         const data = res.data
 
@@ -329,7 +318,6 @@ export default {
         this.$store.commit("loading")
       }
     },
-
     _actualizarPager() {
       const total = this.evento.galeria?.length || 0
       this.pager = Math.ceil(total / this.NUM_RESULTS)
@@ -337,7 +325,6 @@ export default {
         this.pag = this.pager
       }
     },
-
     formatearFecha(fecha) {
       if (!fecha) return ''
 

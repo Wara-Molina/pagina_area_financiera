@@ -1,16 +1,17 @@
 <template>
   <div>
-
     <div class="page-title-area bg-overlay bg-overlay-img banner-img">
       <div class="container">
         <div class="row">
-          <div class="col-lg-7">
+          <div class="col-xl-7 col-lg-8">
             <div class="breadcrumb-inner">
               <h2 class="page-title" style="color: #fff !important;">
                 OFERTAS ACADÉMICAS QUE DISPONE ACTUALMENTE LA CARRERA
               </h2>
               <ul class="page-list">
-                <li><router-link to="/">INICIO</router-link></li>
+                <li>
+                  <router-link to="/">INICIO</router-link>
+                </li>
                 <li>OFERTAS ACADÉMICAS</li>
               </ul>
             </div>
@@ -25,6 +26,7 @@
 
           <div class="col-lg-8 col-12"></div>
 
+          <!-- Barra de búsqueda -->
           <div class="col-lg-4 col-12">
             <div class="td-sidebar">
               <div class="widget widget_search">
@@ -72,8 +74,8 @@
                     <div class="media-left">
                       <router-link
                         :to="'/detalleOferta/' + ofer.ofertas_id"
-                        @click="$store.commit('clickLink')"
-                      >
+                        @click="$store.commit('clickLink')">
+
                         <img
                           :src="imageUrl + ofer.ofertas_imagen"
                           :alt="ofer.ofertas_titulo"
@@ -126,6 +128,7 @@
                         :to="'/detalleOferta/' + ofer.ofertas_id"
                         @click="$store.commit('clickLink')"
                       >
+
                         <img
                           :src="imageUrl + ofer.ofertas_imagen"
                           :alt="ofer.ofertas_titulo"
@@ -153,6 +156,7 @@
                 </div>
               </div>
 
+              <!-- Paginación -->
               <nav class="col-12 td-page-navigation text-center mb-5 mb-lg-0" v-if="pager > 1">
                 <ul class="pagination">
                   <li class="pagination-arrow disable">
@@ -200,6 +204,7 @@
 </template>
 
 <style scoped>
+
 .bg-overlay-img {
   background-image: url("@/assets/Fondo2.jpg");
 }
@@ -272,6 +277,7 @@ export default {
   
   data() {
     return {
+
       idInstitucion: process.env.VUE_APP_ID_INSTITUCION || '22',
 
       ofertas: [],
@@ -287,19 +293,19 @@ export default {
   
   computed: {
     ...mapState(["url_api", "Institucion"]),
-    
+
     imageUrl() {
-      return process.env.VUE_APP_UPLOADS_URL || 'https://servicioadministrador.upea.bo/uploads/'
+      return process.env.VUE_APP_UPLOADS_URL?.trim() || 'https://servicioadministrador.upea.bo'
     }
   },
 
   methods: {
-
     async getOfertasAll() {
       this.loading = true
       try {
         const res = await api.get(`/institucion/${this.idInstitucion}/gacetaEventos`)
         const data = res.data
+
         this.ofertas = (data.ofertasAcademicas || [])
           .filter(ofer => ofer.ofertas_estado === 1 || ofer.ofertas_estado === "1")
           .map(this._limpiarObjeto)
@@ -314,7 +320,6 @@ export default {
         this.$store.commit("loading")
       }
     },
-
 
     _actualizarPager() {
       const total = this.ofertas?.length || 0

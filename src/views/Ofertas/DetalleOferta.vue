@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <div class="page-title-area bg-overlay bg-overlay-img banner-img">
       <div class="container">
         <div class="row">
@@ -47,6 +46,7 @@
             </div>
           </div>
 
+
           <div class="col-lg-8 col-12" v-else-if="oferta.ofertas_id">
             <div class="single-blog-inner mb-0">
               <div class="details">
@@ -68,6 +68,7 @@
                   :href="imageUrl + oferta.ofertas_imagen"
                   target="_blank"
                 >
+
                   <img
                     :src="imageUrl + oferta.ofertas_imagen"
                     :alt="oferta.ofertas_titulo"
@@ -101,6 +102,7 @@
           
         </div>
 
+        <!-- Sidebar -->
         <div class="row justify-content-center mt-5">
           <div class="col-lg-4 col-12">
             <div class="td-sidebar">
@@ -116,6 +118,7 @@
 </template>
 
 <style scoped>
+
 .bg-overlay-img {
   background-image: url("@/assets/Fondo2.jpg");
 }
@@ -183,6 +186,7 @@ export default {
   data() {
     return {
       idInstitucion: process.env.VUE_APP_ID_INSTITUCION || '22',
+
       oferta: {},
       loading: false,
       errorGet: false,
@@ -192,7 +196,7 @@ export default {
   computed: {
     ...mapState(["url_api", "Institucion"]),
     imageUrl() {
-      return process.env.VUE_APP_UPLOADS_URL || 'https://servicioadministrador.upea.bo/uploads/'
+      return process.env.VUE_APP_UPLOADS_URL?.trim() || 'https://servicioadministrador.upea.bo'
     }
   },
 
@@ -203,10 +207,6 @@ export default {
       
       try {
         const idOfer = this.$route.params.idOfer
-        
-        // Opción A: Si hay endpoint específico para una oferta
-        // const res = await api.get(`/ofertas/${idOfer}`)
-
         const res = await api.get(`/institucion/${this.idInstitucion}/gacetaEventos`)
         const data = res.data
 

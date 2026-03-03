@@ -23,7 +23,8 @@ export default {
   data() {
     return {
       idInstitucion: process.env.VUE_APP_ID_INSTITUCION || '22',
-      imageUrl: process.env.VUE_APP_UPLOADS_URL || 'https://servicioadministrador.upea.bo/uploads/'
+      imageUrl: (process.env.VUE_APP_UPLOADS_URL || 'https://servicioadministrador.upea.bo').trim(),
+      sliderInterval: null
     }
   },
   
@@ -57,19 +58,29 @@ export default {
       try {
         const res = await api.get(`/institucion/${this.idInstitucion}/gacetaEventos`)
         const data = res.data.convocatorias || []
-
         const tiposUnicos = {}
+        
         data.forEach(conv => {
-          const tipo = conv.tipo_conv_comun?.tipo_conv_comun_titulo
-          const estado = conv.tipo_conv_comun?.tipo_conv_comun_estado
-          if (tipo && estado === "1" && !tiposUnicos[tipo]) {
-            tiposUnicos[tipo] = conv.tipo_conv_comun
+          const tipoObj = conv.tipo_conv_comun
+          if (!tipoObj) return
+          
+          const tipoNombre = tipoObj.tipo_conv_comun_titulo?.trim().toUpperCase()
+          const estado = String(tipoObj.tipo_conv_comun_estado).trim()
+          const estaActivo = estado === "1" || estado === 1 || estado === "true"
+          
+          if (tipoNombre && estaActivo && !tiposUnicos[tipoNombre]) {
+            tiposUnicos[tipoNombre] = {
+              idtipo_conv_comun: tipoObj.idtipo_conv_comun,
+              tipo_conv_comun_titulo: tipoObj.tipo_conv_comun_titulo,
+              tipo_conv_comun_estado: tipoObj.tipo_conv_comun_estado
+            }
           }
         })
         
         this.$store.commit('setMenuConv', Object.values(tiposUnicos))
       } catch (error) {
         console.error('Error cargando MenuConv:', error)
+        this.$store.commit('setMenuConv', [])
       }
     },
 
@@ -78,17 +89,28 @@ export default {
         const res = await api.get(`/institucion/${this.idInstitucion}/gacetaEventos`)
         const data = res.data.cursos || []
         const tiposUnicos = {}
+        
         data.forEach(cur => {
-          const tipo = cur.tipo_curso_otro?.tipo_conv_curso_nombre
-          const estado = cur.tipo_curso_otro?.tipo_conv_curso_estado
-          if (tipo && estado === "1" && !tiposUnicos[tipo]) {
-            tiposUnicos[tipo] = cur.tipo_curso_otro
+          const tipoObj = cur.tipo_curso_otro
+          if (!tipoObj) return
+          
+          const tipoNombre = tipoObj.tipo_conv_curso_nombre?.trim().toUpperCase()
+          const estado = String(tipoObj.tipo_conv_curso_estado).trim()
+          const estaActivo = estado === "1" || estado === 1 || estado === "true"
+          
+          if (tipoNombre && estaActivo && !tiposUnicos[tipoNombre]) {
+            tiposUnicos[tipoNombre] = {
+              idtipo_curso_otros: cur.idtipo_curso_otros,
+              tipo_conv_curso_nombre: tipoObj.tipo_conv_curso_nombre,
+              tipo_conv_curso_estado: tipoObj.tipo_conv_curso_estado
+            }
           }
         })
         
         this.$store.commit('setMenuCur', Object.values(tiposUnicos))
       } catch (error) {
         console.error('Error cargando MenuCur:', error)
+        this.$store.commit('setMenuCur', [])
       }
     },
 
@@ -162,11 +184,11 @@ export default {
         banner.style.backgroundImage = `url("${img}")`
       }
 
-      if (this._sliderInterval) {
-        clearInterval(this._sliderInterval)
+      if (this.sliderInterval) {
+        clearInterval(this.sliderInterval)
       }
       
-      this._sliderInterval = setInterval(() => {
+      this.sliderInterval = setInterval(() => {
         if (i <= count) {
           img = this.imageUrl + images[i - 1].portada_imagen
           i++
@@ -197,8 +219,8 @@ export default {
   },
   
   beforeUnmount() {
-    if (this._sliderInterval) {
-      clearInterval(this._sliderInterval)
+    if (this.sliderInterval) {
+      clearInterval(this.sliderInterval)
     }
   }
 };

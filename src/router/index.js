@@ -50,7 +50,7 @@ const routes = [
       },
       {
         path: '/detalleOferta/:idOfer',
-        name: 'detalleOfeta',
+        name: 'detalleOferta',
         component: () => import('@/views/Ofertas/DetalleOferta.vue')
       },
       {
@@ -108,17 +108,7 @@ const routes = [
         name: 'aboutView',
         component: () => import('@/views/AboutView.vue')
       },
-      // {
-      //   path: '/about',
-      //   name: 'nosotros',
-      //   component: () => import('@/views/AboutView')
-      // },
-      // {
-      //   path: '/about/mision',
-      //   name: 'mision',
-      //   component: () => import('@/views/AboutView.vue#mision')
-      // },
-     
+
     ]
   },
   {

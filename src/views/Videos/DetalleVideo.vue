@@ -1,6 +1,5 @@
 <template>
   <div>
-
     <div class="page-title-area bg-overlay bg-overlay-img banner-img">
       <div class="container">
         <div class="row">
@@ -24,14 +23,13 @@
       </div>
     </div>
 
-
     <div class="main-blog-area pd-top-120 pd-bottom-120">
       <div class="container">
         <div class="row justify-content-center">
           
           <div class="col-lg-8 col-12" v-if="errorGet">
             <div class="text-center">
-              <h1> Video inexistente</h1>
+              <h1>Video inexistente</h1>
               <p>El video que buscas no está disponible o fue eliminado.</p>
               <button class="btn btn-base mt-3" @click="clickBack">
                 <i class="fa fa-arrow-left"></i> Volver a Videos
@@ -47,7 +45,6 @@
               <p class="mt-3">Cargando información del video...</p>
             </div>
           </div>
-          
 
           <div class="col-lg-8 col-12" v-else-if="video.video_id">
             <div class="single-blog-inner mb-0">
@@ -80,6 +77,7 @@
           
         </div>
         
+        <!-- Sidebar -->
         <div class="row justify-content-center mt-5">
           <div class="col-lg-4 col-12">
             <div class="td-sidebar">
@@ -95,10 +93,10 @@
 </template>
 
 <style scoped>
+
 .bg-overlay-img {
   background-image: url("@/assets/Fondo2.jpg");
 }
-
 
 .single-blog-inner .thumb iframe {
   transition: box-shadow 0.3s ease;
@@ -109,12 +107,10 @@
   box-shadow: 0 4px 16px rgba(0,0,0,0.2);
 }
 
-
 .spinner-border {
   width: 3rem;
   height: 3rem;
 }
-
 
 .text-center h1 {
   color: #dc3545;
@@ -126,13 +122,11 @@
   font-size: 1.1rem;
 }
 
-
 .blog-content-inner {
   line-height: 1.8;
   font-size: 1.05rem;
   color: #333;
 }
-
 
 .blog-meta .date {
   display: flex;
@@ -155,11 +149,8 @@ export default {
   
   data() {
     return {
-
       idInstitucion: process.env.VUE_APP_ID_INSTITUCION || '22',
-      
       video: {},
-    
       loading: false,
       errorGet: false,
     };
@@ -167,10 +158,9 @@ export default {
   
   computed: {
     ...mapState(["url_api", "Institucion"]),
-    
 
     resourceUrl() {
-      return process.env.VUE_APP_UPLOADS_URL || 'https://servicioadministrador.upea.bo/uploads/'
+      return process.env.VUE_APP_UPLOADS_URL?.trim() || 'https://servicioadministrador.upea.bo/uploads/'
     }
   },
 
@@ -182,18 +172,12 @@ export default {
       
       try {
         const idVid = this.$route.params.idVid
-        
-        // Si hay endpoint específico para un video
-        // const res = await api.get(`/videos/${idVid}`)
-        
 
         const res = await api.get(`/institucion/${this.idInstitucion}/contenido`)
         const data = res.data
         
-
         const lista = data.upea_videos || []
         this.video = lista.find(v => v.video_id == idVid) || {}
-        
 
         if (!this.video.video_id) {
           this.errorGet = true
@@ -201,13 +185,11 @@ export default {
           return
         }
         
-
         this.video = this._limpiarObjeto(this.video)
         
       } catch (error) {
         console.error('❌ Error cargando video:', error)
         this.errorGet = true
-        
 
         if (error.response?.status === 404) {
           console.warn('Video no encontrado (404)')
@@ -233,22 +215,18 @@ export default {
       return cleaned
     },
 
-
     clickBack() {
       this.$store.commit("clickLink")
       this.$router.go(-1)
     }
   },
 
-
   created() {
     this.$store.commit("loadOn")
     this.getVideoOne()
   },
 
- 
   beforeUnmount() {
-
     this.video = {}
     this.errorGet = false
     this.loading = false

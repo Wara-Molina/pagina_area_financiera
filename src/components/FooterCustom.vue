@@ -1,4 +1,3 @@
-
 <template>
   <div>
     <footer class="bg-cover footer-area banner-area-4">
@@ -14,24 +13,24 @@
                   <li><strong>REDES SOCIALES:</strong></li>
                   <br>
                   <li>
-                    <a :href="Institucion.institucion_facebook?.trim()" target="_blank">
+                    <a :href="formatUrl(Institucion.institucion_facebook)" target="_blank">
                       <i class="fa fa-facebook" aria-hidden="true"></i>
                     </a>
                   </li>
                   <li>
-                    <a :href="Institucion.institucion_youtube?.trim()" target="_blank">
+                    <a :href="formatUrl(Institucion.institucion_youtube)" target="_blank">
                       <i class="fa fa-youtube" aria-hidden="true"></i>
                     </a>
                   </li>
                 </ul>
               </div>
             </div>
-            
+          
             <div class="col-lg-3 col-md-3 widget widget_tags">
               <h4 class="widget-title">Enlaces Externos</h4>
               <div class="tagcloud">
                 <a 
-                  :href="link.url_link?.trim()" 
+                  :href="formatUrl(link.url_link)" 
                   target="_blank" 
                   v-for="(link, index) of Links" 
                   :key="link.id_link || index"
@@ -39,25 +38,24 @@
                 >
                   {{ link.nombre }}
                 </a>
-                <a href="https://sie.upea.bo/" target="_blank">SIE UPEA</a>
+                <a href="https://.upea.bo/" target="_blank">UTIC UPEA</a>
               </div>
             </div>
-
             <div class="col-lg-5 col-md-4 col-sm-12 pl-lg-5 pr-5 pr-lg-0">
               <div class="widget widget_contact pr-lg-3">
                 <h4 class="widget-title">Contacto</h4>
                 <ul class="details style-icon">
                   <li>
                     <i class="fa fa-phone"></i> 
-                    +{{ Institucion.institucion_celular1 }}
+                    +{{ formatPhone(Institucion.institucion_celular1) }}
                   </li>
                   <li>
                     <i class="fa fa-envelope"></i>
-                    {{ Institucion.institucion_correo1?.trim() }}
+                    {{ formatText(Institucion.institucion_correo1) }}
                   </li>
                   <li>
                     <i class="fa fa-map-marker"></i>
-                    {{ Institucion.institucion_direccion?.trim() }}
+                    {{ formatText(Institucion.institucion_direccion) }}
                   </li>
                 </ul>
               </div>
@@ -65,15 +63,15 @@
           </div>
         </div>
       </div>
-      
+
       <div class="">
         <div class="container">
           <div class="row">
             <div class="col-md-7 text-md-right align-self-center mt-lg-0 mt-3">
-              <a href="https://sie.upea.bo/" target="_blank">
-                <img src="@/assets/sie.png" width="100" alt="sie" />
+              <a href="https://utic.upea.bo/" target="_blank">
+                <img src="@/assets/utic.png" width="100" alt="sie" />
               </a>
-              <p>© Copyright 2023 SIE_UPEA&nbsp;</p>
+              <p>© Copyright 2023 UTIC_UPEA&nbsp;</p>
             </div>
           </div>
         </div>
@@ -83,7 +81,7 @@
     <div class="whatsapp">
       <a 
         class="btn_whatsapp" 
-        :href="'https://api.whatsapp.com/send?phone=591' + Institucion.institucion_celular1"
+        :href="getWhatsAppLink(Institucion.institucion_celular1)"
         target="_blank" 
         title="Contactanos por Whatsapp"
       >
@@ -111,17 +109,37 @@
 import { mapState } from "vuex";
 
 export default {
-  name: "footerView",
+  name: "FooterCustom",
   
   computed: {
     ...mapState(["Institucion", "MenuConv", "MenuCur", "url_api", "Links"]),
     
     imageUrl() {
-      return process.env.VUE_APP_UPLOADS_URL || 'https://servicioadministrador.upea.bo/uploads/'
+      return (process.env.VUE_APP_UPLOADS_URL || 'https://servicioadministrador.upea.bo').trim()
     }
   },
   
   methods: {
+    formatUrl(value) {
+      if (!value) return '#'
+      const trimmed = String(value).trim()
+      return trimmed.startsWith('http') ? trimmed : `https://${trimmed}`
+    },
+    
+    formatText(value) {
+      if (!value) return ''
+      return String(value).trim()
+    },
+    formatPhone(value) {
+      if (!value) return ''
+      return String(value).replace(/[^0-9]/g, '')
+    },
+    getWhatsAppLink(phone) {
+      if (!phone) return '#'
+      const cleanPhone = String(phone).replace(/[^0-9]/g, '')
+      return `https://api.whatsapp.com/send?phone=591${cleanPhone}`
+    },
+    
     clickBack() {
       this.$store.commit("clickLink");
       this.$router.go(-1);

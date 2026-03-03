@@ -17,12 +17,11 @@
         </div>
       </div>
     </div>
-
     <div class="course-area pd-top-120 pd-bottom-120">
       <div class="container">
         <div class="row">
           <div class="col-lg-8 col-12">
-            <!-- BÚSQUEDA -->
+
             <div v-if="searchGet">
               <h3 v-if="searchValues.length === 0" class="text-center">
                 No se encontraron resultados para "{{ search }}"
@@ -79,7 +78,6 @@
               </div>
             </div>
 
-            <!-- LISTA PRINCIPAL -->
             <div v-else class="row">
               <div v-if="seminarios.length === 0" class="col-12 text-center">
                 <h2 class="aligncenter">Sin seminarios disponibles</h2>
@@ -130,7 +128,6 @@
                     </div>
                   </div>
                 </template>
-
                 <nav class="col-12 td-page-navigation text-center mb-5 mb-lg-0" v-if="pager > 1">
                   <ul class="pagination">
                     <li class="pagination-arrow disable">
@@ -151,8 +148,7 @@
               </div>
             </div>
           </div>
-          
-          <!-- Sidebar -->
+
           <div class="col-lg-4 col-12">
             <div class="td-sidebar">
               <div class="widget widget_search">
@@ -171,6 +167,7 @@
 </template>
 
 <style scoped>
+
 .bg-overlay-img { 
   background-image: url("@/assets/Fondo2.jpg"); 
 }
@@ -221,9 +218,8 @@
   height: 40px; 
   border-radius: 50%; 
   object-fit: cover; 
-  }
+}
 </style>
-
 
 <script>
 import SidebarCustom from "@/components/SidebarCustom.vue";
@@ -236,8 +232,8 @@ export default {
   data() {
     return {
       idInstitucion: process.env.VUE_APP_ID_INSTITUCION || '22',
-      tipo: "",              // ← NUEVO
-      tipoSeminarioId: null, // ← NUEVO
+      tipo: "",
+      tipoSeminarioId: null,
       seminarios: [],
       search: "",
       searchGet: false,
@@ -251,7 +247,7 @@ export default {
   computed: {
     ...mapState(["url_api", "Institucion"]),
     imageUrl() {
-      return process.env.VUE_APP_UPLOADS_URL || 'https://servicioadministrador.upea.bo/uploads/'
+      return process.env.VUE_APP_UPLOADS_URL?.trim() || 'https://servicioadministrador.upea.bo'
     }
   },
   watch: {
@@ -275,7 +271,7 @@ export default {
         this.$store.commit("loading") 
       }
     },
-    
+
     async getTipoSem(tipo_sem) {
       try {
         if (!tipo_sem) {
@@ -334,13 +330,12 @@ export default {
         this.$store.commit("loading")
       }
     },
-    
+
     _actualizarPager() {
       const t = this.seminarios?.length || 0
       this.pager = Math.ceil(t / this.NUM_RESULTS)
       if (this.pag > this.pager && this.pager > 0) this.pag = this.pager
     },
-    
     buscar() {
       const q = this.search.trim().toUpperCase()
       if (q) {
@@ -354,7 +349,7 @@ export default {
         this.limpiarBusqueda()
       }
     },
-    
+
     limpiarBusqueda() {
       this.search = ""
       this.searchGet = false

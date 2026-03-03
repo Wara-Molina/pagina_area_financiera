@@ -1,6 +1,5 @@
 <template>
   <div>
-    
     <div class="page-title-area bg-overlay bg-overlay-img banner-img">
       <div class="container">
         <div class="row">
@@ -23,11 +22,9 @@
         </div>
       </div>
     </div>
-
     <div class="main-blog-area pd-top-120 pd-bottom-120">
       <div class="container">
         <div class="row justify-content-center">
-
           <div class="col-lg-8 col-12" v-if="errorGet">
             <div class="text-center">
               <h1>Servicio inexistente</h1>
@@ -37,8 +34,6 @@
               </button>
             </div>
           </div>
-          
-
           <div class="col-lg-8 col-12" v-else-if="loading">
             <div class="text-center">
               <div class="spinner-border text-primary" role="status">
@@ -47,7 +42,6 @@
               <p class="mt-3">Cargando información del servicio...</p>
             </div>
           </div>
-          
           <div class="col-lg-8 col-12" v-else-if="servicio.serv_id">
             <div class="single-blog-inner mb-0">
               <div class="details">
@@ -78,7 +72,6 @@
             <div class="blog-content-inner">
               <h4>Descripción del servicio</h4>
               <p class="mt-0" v-html="servicio.serv_descripcion"></p>
-              
               <div v-if="servicio.imagen && servicio.imagen.length > 0">
                 <h4 class="mt-5">Galería de imágenes</h4>
                 <div class="gallery-area pd-top-50 pd-bottom-50">
@@ -106,7 +99,6 @@
                           />
                         </a>
                       </div>
-                      
                       <nav
                         class="col-12 td-page-navigation text-center mb-5 mb-lg-0"
                         v-if="pager > 1"
@@ -150,6 +142,7 @@
           
         </div>
 
+        <!-- Sidebar -->
         <div class="row justify-content-center mt-5">
           <div class="col-lg-4 col-12">
             <SidebarCustom></SidebarCustom>
@@ -166,7 +159,6 @@
 .bg-overlay-img {
   background-image: url("@/assets/Fondo2.jpg");
 }
-
 
 .single-gallery {
   display: block;
@@ -192,7 +184,6 @@
   width: 3rem;
   height: 3rem;
 }
-
 
 .text-center h1 {
   color: #dc3545;
@@ -231,48 +222,34 @@ export default {
   
   computed: {
     ...mapState(["url_api", "Institucion"]),
-    
-
     imageUrl() {
-      return process.env.VUE_APP_UPLOADS_URL || 'https://servicioadministrador.upea.bo/uploads/'
+      return process.env.VUE_APP_UPLOADS_URL?.trim() || 'https://servicioadministrador.upea.bo'
     }
   },
 
   methods: {
-
     async getServicioOne() {
       this.loading = true
       this.errorGet = false
       
       try {
         const idServ = this.$route.params.idServ
-        
-        // Si hay endpoint específico para un servicio
-        // const res = await api.get(`/servicios/${idServ}`)
-        
-
         const res = await api.get(`/institucion/${this.idInstitucion}/gacetaEventos`)
         const data = res.data
         
-
         const lista = data.serviciosCarrera || []
         this.servicio = lista.find(s => s.serv_id == idServ) || {}
-        
-
         if (!this.servicio.serv_id) {
           this.errorGet = true
           console.warn('Servicio no encontrado con ID:', idServ)
           return
         }
-        
         this.servicio = this._limpiarObjeto(this.servicio)
         this._actualizarPager()
         
       } catch (error) {
         console.error('Error cargando servicio:', error)
         this.errorGet = true
-        
-
         if (error.response?.status === 404) {
           console.warn('Servicio no encontrado (404)')
         } else if (error.response?.status === 500) {
@@ -283,8 +260,6 @@ export default {
         this.$store.commit("loading")
       }
     },
-
-
     _actualizarPager() {
       const total = this.servicio.imagen?.length || 0
       this.pager = Math.ceil(total / this.NUM_RESULTS)
@@ -293,12 +268,9 @@ export default {
         this.pag = this.pager
       }
     },
-
-
     formatearFecha(fecha) {
       if (!fecha) return ''
       
-
       if (typeof fecha === 'string' && fecha.includes('de')) return fecha
       
       const meses = [
@@ -307,11 +279,9 @@ export default {
       ]
       
       let fechaObj
-
       if (fecha.includes('T')) {
         fechaObj = new Date(fecha)
       } else {
-
         const partes = fecha.substr(0, 10).split("-")
         fechaObj = new Date(partes[0], parseInt(partes[1]) - 1, partes[2])
       }
@@ -320,8 +290,6 @@ export default {
       
       return `${fechaObj.getDate()} de ${meses[fechaObj.getMonth()]} de ${fechaObj.getFullYear()}`
     },
-
-
     _limpiarObjeto(obj) {
       if (!obj || typeof obj !== 'object') return obj
       const cleaned = { ...obj }
@@ -334,22 +302,16 @@ export default {
       })
       return cleaned
     },
-
-
     clickBack() {
       this.$store.commit("clickLink")
       this.$router.go(-1)
     }
   },
-
   created() {
     this.$store.commit("loadOn")
     this.getServicioOne()
   },
-
-
   beforeUnmount() {
-
     this.servicio = {}
     this.errorGet = false
     this.pag = 1

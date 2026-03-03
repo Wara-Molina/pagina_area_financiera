@@ -1,12 +1,10 @@
 <template>
   <div class="navbar-area">
-    <!-- <div v-if="idInstitucion !== '13'" class="navbar-top"> -->
-    <div  class="navbar-top">
+    <div class="navbar-top">
       <div class="container">
         <div class="row">
           <div class="col-6 text-md-left">
             <ul>
-             
               <li class="d-none d-md-inline-block" v-if="Institucion.institucion_correo1?.trim()">
                 <p>
                   <i class="fa fa-envelope-o"></i>
@@ -34,7 +32,6 @@
         </div>
       </div>
     </div>
-
     <nav class="navbar navbar-area-1 navbar-area navbar-expand-lg">
       <div class="container nav-container">
         <div class="responsive-mobile-menu">
@@ -44,60 +41,70 @@
             <span class="icon-right"></span>
           </button>
         </div>
-
-        <!-- Logo condicional -->
         <div>
           <div v-if="idInstitucion === '24'">
             <router-link to="/">
               <div class="logo_carrera">
-                <img src="@/assets/logoComercio.png" alt="img" width="274" height="113" />
+                <img src="@/assets/logoComercio.png" 
+                alt="Comercio Internacional" 
+                width="274" 
+                height="113" 
+                class="logo-animado"/>
               </div>
             </router-link>
           </div>
           <div v-else class="logo">
             <router-link to="/">
               <div class="logo_carrera">
-                <img src="@/assets/upea.png" alt="img" width="70" height="70" />
+                <img 
+                  :src="imageUrl + Institucion?.institucion_logo" 
+                  :alt="Institucion?.institucion_nombre || 'Logo'"
+                  width="100"
+                  height="auto"
+                  @error="e => e.target.src = require('@/assets/upea.png')"
+                  class="logo-animado"
+                  />
               </div>
             </router-link>
           </div>
         </div>
         &nbsp;
-
         <div class="collapse navbar-collapse" :class="[sopen ? 'sopen' : '']" id="edumint_main_menu">
           <ul class="navbar-nav menu-open">
-            <li class="" @mouseover="showSubMenu('m_inicio')">
+            
+            <!-- Inicio -->
+            <li @mouseover="showSubMenu('m_inicio')">
               <router-link to="/">INICIO</router-link>
             </li>
             <li class="menu-item-has-children" @mouseover="showSubMenu('m_informacion')">
               <router-link to="/about">INFORMACION</router-link>
               <ul class="sub-menu" :style="[m_informacion ? 'display:block' : 'display:none']">
-                <li><a href="#nosotros" @click="click_ma()">SOBRE NOSOTROS</a></li>
+                <li><a href="#abaut" @click="click_ma()">SOBRE NOSOTROS</a></li>
                 <li><a href="#mision" @click="click_ma()">MISION Y VISION</a></li>
-                <li><a href="#atoridades" @click="click_ma()">AUTORIDADES</a></li>
+                <li><a href="#autoridades" @click="click_ma()">AUTORIDADES</a></li>
                 <li><a href="#contacto" @click="click_ma()">CONTACTO</a></li>
               </ul>
             </li>
-
             <li class="menu-item-has-children" @mouseover="showSubMenu('m_conv')">
               <a href="#">COMUNICADOS</a>
               <ul class="sub-menu" :style="[m_conv ? 'display:block' : 'display:none']">
-                <li v-for="(mc, index) of MenuConv" :key="mc.idtipo_conv_comun || index">
+                <li v-for="mc of MenuConv" :key="mc.idtipo_conv_comun">
                   <router-link :to="'/convocatorias/' + mc.idtipo_conv_comun" @click="click_m()">
                     {{ mc.tipo_conv_comun_titulo }}
                   </router-link>
                 </li>
               </ul>
             </li>
-
             <li class="menu-item-has-children" @mouseover="showSubMenu('m_mas')">
               <a href="#">MAS</a>
               <ul class="sub-menu" :style="[m_mas ? 'display:block' : 'display:none']">
-                <li v-for="(mc, index) of MenuCur" :key="mc.idtipo_curso_otros || index">
+                <li v-for="mc of MenuCur" :key="'curso-' + mc.idtipo_curso_otros">
                   <router-link :to="'/cursos/' + mc.idtipo_curso_otros" @click="click_m()">
                     {{ mc.tipo_conv_curso_nombre }}
                   </router-link>
                 </li>
+                
+                <!-- Enlaces fijos -->
                 <li><router-link to="/servicios" @click="click_m()">SERVICIOS</router-link></li>
                 <li><router-link to="/ofertas" @click="click_m()">OFERTAS ACADÉMICAS</router-link></li>
                 <li><router-link to="/publicaciones" @click="click_m()">PUBLICACIONES</router-link></li>
@@ -109,24 +116,22 @@
                 </li>
               </ul>
             </li>
-
             <li class="menu-item-has-children" @mouseover="showSubMenu('m_link')">
               <a href="#">ENLACES</a>
               <ul class="sub-menu" :style="[m_link ? 'display:block' : 'display:none']">
-                <li v-for="(link, index) of Links" :key="link.id_link || index">
-                  <a :href="link.url_link?.trim()" target="_blank" :title="link.tipo">
-                    {{ link.nombre?.toUpperCase() }}
+                <li v-for="link of Links" :key="link.id_link">
+                  <a :href="formatUrl(link.url_link)" target="_blank" :title="link.tipo">
+                    {{ link.nombre }}
                   </a>
                 </li>
               </ul>
             </li>
           </ul>
         </div>
-
         <div class="nav-right-part nav-right-part-desktop style-white">
           <ul class="mb-0">
             <li class="ml-2">
-              <a class="btn btn-red" href="http://administracionpaginas.upea.edu.bo/login" target="_blank">
+              <a class="btn btn-red" href="https://apiadministrador.upea.bo/sign-in" target="_blank">
                 <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-login-2" width="24"
                   height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
                   stroke-linecap="round" stroke-linejoin="round">
@@ -145,11 +150,28 @@
 </template>
 
 <style scoped>
+
+.logo-animado {
+  animation: flip-horizontal 5s ease-in-out infinite;
+  transform-style: preserve-3d;
+}
+
+@keyframes flip-horizontal {
+  0% {
+    transform: perspective(400px) rotateY(0deg);
+  }
+  100% {
+    transform: perspective(400px) rotateY(360deg);
+  }
+}
+
+.logo-animado:hover {
+  animation-play-state: paused;
+}
 .logo_carrera {
   display: flex;
   align-items: center;
 }
-
 .logo_carrera h3 {
   color: white;
   padding: 5px;
@@ -158,13 +180,11 @@
 
 <script>
 import { mapState } from "vuex";
-import api from '@/plugins/axios'
 
 export default {
   data() {
     return {
       idInstitucion: process.env.VUE_APP_ID_INSTITUCION || '22',
-
       sopen: false,
       m_inicio: false,
       m_informacion: false,
@@ -179,11 +199,17 @@ export default {
     ...mapState(["url_api", "MenuConv", "MenuCur", "Institucion", "getter", "Links"]),
 
     imageUrl() {
-      return process.env.VUE_APP_UPLOADS_URL || 'https://servicioadministrador.upea.bo/uploads/'
+      return (process.env.VUE_APP_UPLOADS_URL || 'https://servicioadministrador.upea.bo').trim()
     }
   },
 
   methods: {
+    formatUrl(value) {
+      if (!value) return '#'
+      const trimmed = String(value).trim()
+      return trimmed.startsWith('http') ? trimmed : `https://${trimmed}`
+    },
+
     click_m() {
       this.$store.commit("clickLink");
       this.openMenu();
@@ -219,13 +245,14 @@ export default {
 
     async getLinks() {
       try {
-        const res = await api.get(`/institucion/${this.idInstitucion}/recursos`)
+        const res = await this.$api.get(`/institucion/${this.idInstitucion}/recursos`)
         const data = res.data
         const filterLinks = (data.linksExternoInterno || [])
           .filter(link => link.estado === "1" || link.estado === 1)
           .map(this._limpiarObjeto)
         this.$store.commit('setLinks', filterLinks)
       } catch (error) {
+        // ✅ ESENCIAL: Solo errores críticos para producción
         console.error('Error cargando Links:', error)
       }
     },
@@ -241,6 +268,18 @@ export default {
         }
       })
       return cleaned
+    }
+  },
+
+  // ✅ WATCH limpio: sin console.log (la reactividad de Vue se encarga)
+  watch: {
+    MenuCur: {
+      handler() {
+        // No se necesita lógica adicional aquí
+        // El componente se re-renderiza automáticamente gracias a Vuex
+      },
+      deep: true,
+      immediate: true
     }
   },
 
