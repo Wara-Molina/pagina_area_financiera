@@ -164,10 +164,11 @@
     transform: perspective(400px) rotateY(360deg);
   }
 }
-
 .logo-animado:hover {
   animation-play-state: paused;
 }
+
+
 .logo_carrera {
   display: flex;
   align-items: center;
@@ -252,7 +253,6 @@ export default {
           .map(this._limpiarObjeto)
         this.$store.commit('setLinks', filterLinks)
       } catch (error) {
-        // ✅ ESENCIAL: Solo errores críticos para producción
         console.error('Error cargando Links:', error)
       }
     },
@@ -271,12 +271,9 @@ export default {
     }
   },
 
-  // ✅ WATCH limpio: sin console.log (la reactividad de Vue se encarga)
   watch: {
     MenuCur: {
       handler() {
-        // No se necesita lógica adicional aquí
-        // El componente se re-renderiza automáticamente gracias a Vuex
       },
       deep: true,
       immediate: true
