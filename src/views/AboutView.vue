@@ -310,7 +310,7 @@ export default {
     ...mapState(["Institucion", "url_api"]),
 
     imageUrl() {
-      return process.env.VUE_APP_UPLOADS_URL?.trim() || 'https://servicioadministrador.upea.bo'
+      return process.env.VUE_APP_UPLOADS_URL?.trim() || 'https://apiadministrador.upea.bo'
     }
   },
 

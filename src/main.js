@@ -34,8 +34,8 @@ import vueAxios from 'vue-axios'
 
 import axios from 'axios'
 
-const API_BASE = process.env.VUE_APP_API_BASE_URL || 'https://servicioadministrador.upea.bo/api/v2'
-const UPLOADS_URL = process.env.VUE_APP_UPLOADS_URL || 'https://servicioadministrador.upea.bo'
+const API_BASE = process.env.VUE_APP_API_BASE_URL || 'https://apiadministrador.upea.bo/api/v2'
+const UPLOADS_URL = process.env.VUE_APP_UPLOADS_URL || 'https://apiadministrador.upea.bo'
 const API_TOKEN = process.env.VUE_APP_API_TOKEN
 
 axios.defaults.baseURL = API_BASE

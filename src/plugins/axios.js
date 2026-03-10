@@ -2,9 +2,9 @@ import axios from 'axios'
 
 const clean = (value) => value?.trim() || ''
 
-const API_BASE = clean(process.env.VUE_APP_API_BASE_URL) || 'https://servicioadministrador.upea.bo/api/v2'
+const API_BASE = clean(process.env.VUE_APP_API_BASE_URL) || 'https://apiadministrador.upea.bo/api/v2'
 const API_TOKEN = clean(process.env.VUE_APP_API_TOKEN)
-const UPLOADS_URL = clean(process.env.VUE_APP_UPLOADS_URL) || 'https://servicioadministrador.upea.bo'
+const UPLOADS_URL = clean(process.env.VUE_APP_UPLOADS_URL) || 'https://apiadministrador.upea.bo'
 
 
 const api = axios.create({

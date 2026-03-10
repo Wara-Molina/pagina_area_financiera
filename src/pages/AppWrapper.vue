@@ -23,7 +23,7 @@ export default {
   data() {
     return {
       idInstitucion: process.env.VUE_APP_ID_INSTITUCION || '22',
-      imageUrl: (process.env.VUE_APP_UPLOADS_URL || 'https://servicioadministrador.upea.bo').trim(),
+      imageUrl: (process.env.VUE_APP_UPLOADS_URL || 'https://apiadministrador.upea.bo').trim(),
       sliderInterval: null
     }
   },
