@@ -438,7 +438,7 @@
   text-decoration: none;
   border-radius: 25px;
   font-weight: 600;
-  font-size: 1.50rem;
+  font-size: 1.00rem;
   transition: all 0.3s ease;
   box-shadow: 0 2px 8px rgba(255, 193, 7, 0.3);
   border: 2px solid transparent;

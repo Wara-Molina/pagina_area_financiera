@@ -22,6 +22,11 @@
                       <i class="fa fa-youtube" aria-hidden="true"></i>
                     </a>
                   </li>
+                  <li v-if="Institucion.institucion_twitter?.trim()">
+                    <a :href="formatUrl(Institucion.institucion_twitter)" target="_blank" rel="noopener noreferrer">
+                      <i class="fa fa-twitter" aria-hidden="true"></i>
+                    </a>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -71,7 +76,7 @@
               <a href="https://utic.upea.bo/" target="_blank">
                 <img src="@/assets/utic.png" width="100" alt="sie" />
               </a>
-              <p>© Copyright 2023 UTIC_UPEA&nbsp;</p>
+              <p>© Copyright {{ currentYear }} UTIC_UPEA&nbsp;</p>
             </div>
           </div>
         </div>
@@ -116,8 +121,14 @@ export default {
     
     imageUrl() {
       return (process.env.VUE_APP_UPLOADS_URL || 'https://apiadministrador.upea.bo').trim()
+    },
+
+        currentYear() {
+      return new Date().getFullYear();
     }
+
   },
+  
   
   methods: {
     formatUrl(value) {
