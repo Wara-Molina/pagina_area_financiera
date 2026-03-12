@@ -464,7 +464,7 @@ export default {
         const data = res.data
         const lista = data.upea_gaceta_universitaria || []
         
-        console.log('📦 Gacetas cargadas:', lista.length)
+       // console.log('📦 Gacetas cargadas:', lista.length)
         
         this.gacetas = lista
           .filter(g => g.gaceta_documento)  
